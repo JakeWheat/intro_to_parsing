@@ -1,0 +1,138 @@
+h1, h2 {
+  display:block;
+  background-color: #f0f0f0;
+  border-top: thin #c0c0c0 solid;
+  /*position:relative;*/
+  padding-left:1ex;
+  /*z-index: -10;*/
+}
+h1 {
+  font-size: x-large;
+  /*left: -3ex;*/
+  margin-top: 3ex;
+  /*width: 100%;*/
+}
+h2 {
+  font-size: large;
+  /*left: -1.5ex;*/
+  margin-top: 1.5ex;
+  /*width: 100%;*/
+}
+body {
+  margin-left: 5em;
+  margin-right: 5em;
+  margin-bottom: 5em;
+  margin-top: 2em;
+}
+#TOC {
+  float:right;
+  z-index:10;
+  background-color: #f0f0f0;
+  border: thin #c0c0c0 solid;
+  padding:2ex;
+}
+.header {
+  /*position:relative;
+  left: -4ex;*/
+  border-top: thin #c0c0c0 solid;
+  border-bottom: thin #c0c0c0 solid;
+  display:inline;
+  padding: 1ex;
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+.footer {
+  text-align: center;
+  font-size: small;
+}
+pre {
+  padding: 0.5ex;
+}
+
+
+pre {
+  background-color: #f0f0f0;
+}
+
+/*
+.SqlPostgresql pre.sourceCode {
+  padding: 0.5em;
+  background-color: #f0f6f6;
+}
+.sql pre.sourceCode {
+  padding: 0.5em;
+  background-color: #f0f6f6;
+}
+.GeneratedSql .SqlPostgresql pre.sourceCode, .SqlPostgresql .GeneratedSql pre.sourceCode {
+  padding: 0.5em;
+  background-color: #f0f6e0;
+}
+.UnusedSql .SqlPostgresql pre.sourceCode, .SqlPostgresql .UnusedSql pre.sourceCode {
+  padding: 0.5em;
+  background-color: #e9e9e9;
+}
+.haskell,.Haskell pre.sourceCode {
+  background-color: #f5f5d9;
+}
+
+.sh pre.sourceCode {
+  padding: 0.5em;
+  background-color: #f0f0f0;
+}
+*/
+table, tr, td {
+  border-collapse:collapse;
+  cell-padding:2px;
+  cell-spacing:2px;
+/*  padding:2px
+  spacing:2px
+  margin:2px*/
+  vertical-align:top;
+}
+td pre {
+  width: 98%;
+  height: 98%;
+  vertical-align:top;
+}
+table {
+  width:100%;
+  table-layout:fixed;
+}
+td {
+  width: 50%;
+  vertical-align:top;
+  overflow:auto;
+}
+hr {
+  border: 0;
+  color: black;
+  background-color: black;
+  height: 1px;
+  width: 75%;
+}
+
+.tablediv {
+  width:100%;
+}
+
+/* higlighting kate */
+
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre
+   { /*margin: 2; padding: 2; border: 2; */ vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+pre.sourceCode { }
+pre.sourceCode span.Normal { }
+pre.sourceCode span.Keyword { color: #007020; font-weight: bold; }
+pre.sourceCode span.DataType { color: #902000; }
+pre.sourceCode span.DecVal { color: #40a070; }
+pre.sourceCode span.BaseN { color: #40a070; }
+pre.sourceCode span.Float { color: #40a070; }
+pre.sourceCode span.Char { color: #4070a0; }
+pre.sourceCode span.String { color: #4070a0; }
+pre.sourceCode span.Comment { color: #60a0b0; font-style: italic; }
+pre.sourceCode span.Others { color: #007020; }
+pre.sourceCode span.Alert { color: red; font-weight: bold; }
+pre.sourceCode span.Function { color: #06287e; }
+pre.sourceCode span.RegionMarker { }
+pre.sourceCode span.Error { color: red; font-weight: bold; }

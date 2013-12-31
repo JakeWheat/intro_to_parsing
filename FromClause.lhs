@@ -40,6 +40,9 @@ data JoinCondition = JoinOn ValueExpr
                 deriving (Eq,Show)
 ~~~~
 
+rough grammar
+
+~~~~
 tref
 (cross | [natural]
          ([inner]
@@ -49,6 +52,7 @@ tref
          )
 join tref
 [on expr | using (...)]
+~~~~
 
 
 Here are the examples:

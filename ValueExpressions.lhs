@@ -7,8 +7,6 @@ to the simple expressions used in the last tutorial.
 > {-# LANGUAGE TupleSections #-}
 > module ValueExpressions where
 
-TODO: qualify or add explicit imports
-
 > import Text.Groom (groom)
 > import qualified Text.Parsec as P
 > import qualified Text.Parsec.String as P
@@ -17,7 +15,6 @@ TODO: qualify or add explicit imports
 > import Control.Monad (void,guard)
 > --import Debug.Trace
 > import Data.List (intercalate)
-> import Data.Maybe ()
 > import qualified Text.Parsec.Expr as E
 > import Control.Monad.Identity (Identity)
 
@@ -188,6 +185,8 @@ Here is the whitespace parser which skips comments also
 >                    *> manyTill anyChar (try $ string "*/")
 >     -- use many1 so we can more easily avoid non terminating loops
 >     simpleWhiteSpace = void $ many1 (oneOf " \t\n")
+
+TODO: lots more explanation
 
 == Literal
 
@@ -484,10 +483,12 @@ Here is the value expr parser:
 >                   ,identifier
 >                   ,sparens]
 
-In the 'factor' parser, I've used try and ordered them carefully so
-that all the parsers work OK. There is probably a better way to handle
-this. I like to use left factoring which probably makes the parser
-code faster and I think can give better error messages as well.
+In the 'term' parser, I've used try and ordered the choices carefully
+so that all the parsers work OK. I like to rearrange code like this to
+left factor it, even though not having to left factor is one of the
+advertised benefits of Parsec and similar libraries. However, I think
+left factoring probably makes the parser code faster and I think can
+give better error messages as well. (TODO: update when confirmed)
 
 TODO: Here are some experiments to show the problems solved by details
 and examples of it not working when try is removed or the order is

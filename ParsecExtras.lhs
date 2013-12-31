@@ -46,56 +46,74 @@ Here are our new operators in precedence order:
 
 == unary + -
 
+~~~~
 +a
 -3
+~~~~
 
 == exponentiation
 
+~~~~
 a ^ 3
+~~~~
 
 associativity: left
 
 == multiplication, division, modulo
 
+~~~~
 a * 3
 3 / b
 a % 5
+~~~~
 
 associativity: left
 
 == addition, subtraction
 
+~~~~
 a + b
 a - b
+~~~~
 
 associativity: left
 
 == less than, greater than
 
+~~~~
 a < b
 a > b
+~~~~
 
 associativity: none
 
 == equals
 
+~~~~
 a = 3
+~~~~
 
 associativity: right
 
 == not
 
+~~~~
 not a
+~~~~
 
 == and
 
+~~~~
 a and b
+~~~~
 
 associativity: left
 
 == or
 
+~~~~
 a or b
+~~~~
 
 associativity: left
 

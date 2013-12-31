@@ -1,59 +1,61 @@
 TODO:
 
-work on simple-sql-parser: review the changes in this code to update
-it, especially giving up and using the parsec Expr to get a new
-release done asap.
+review and remove explicit explanations where feasible, replace with
+more examples
 
-work on parsing tutorial:
-lots of little todos
-big ones are
-1. using chainl in the simple expression parser
-2. the expr, perm and token tutorials
+try and create a script to render, something like:
+pandoc --from=markdown+lhs --to=html ParsingIntroduction.lhs -o ParsingIntroduction.lhs.html -c main.css --toc
+for all the files. Investigate how it will look when uploaded to fp
 
-blockers are: chainl and text.parsec.expr
+documents which need finishing off:
 
-maybe separate out the modules at the end
+ParsingIntroduction:
+lots of examples to write
+simple expressions: tests, pretty printer quickcheck
 
-value expressions
-main one is use text.parsec.expr in operator parsing
+ParsecExtras:
+have to write more on expressions
+do the perm and token sections
 
-then can finish outline of value expressions
+ValueExpressions:
 
-create a refactored value expressions for use in the query expressions
-query expressions: expand and do simple from clause parser
+needs a lot more work, add more discussion of overlap issues,
+etc.
 
-do the from clause tutorial
+QueryExpression:
 
-pretty printing, writing some tests
+tidy up and review, there should be some changes in style + discussion
+of this
 
-error messages and refactoring the parsers
+FromClause:
 
-refactored project, cabal package
+this needs starting again from scratch, build up with lots of
+discussion. It might be useful to add more syntax to demonstrate more
+issues and techniques
 
-extending the value expressions (multiple docs?)
+pretty printing:
+create a nice pretty printer using the text.pretty lib
 
-extending the query expressions (mulitple docs?)
+writing tests:
+tests should already litter the previous code. This document will maybe cover a hunit wrapper, test.framework wrapper, maybe tasty?
 
-adding:
-position annotation
-quasiquotes
-dialects
-separate lexer (investigate simplicity of code, accurate
-  parse/modify/pretty print, speed, error messages)
+error messages:
 
+explore what error messages it produces and look at how the parsers
+can be rearranged for better error messages
 
+refactored project:
 
----------
+create a new branch in simple-sql-parser, document how the files are
+created, laid out and the cabal and extra stuff created. Maybe talk
+about the website also. links to stuff about creating packages
 
-TODO:
+extending value expressions
 
-
-then create a set of files with the plain complete parser without the
-tutorial information.
-
-Follow ups: create a task list to produce the full parser from this
-tutorial parser. Create a short article about each stage.
-
+extend these to add all the bits from ansi sql 2003 (+cherry pick
+later bits?) in stages with discussion of issues.
+TODO: write list of features and issues
+partial list:
 left factor expression parser
 number literals
 typed literal
@@ -66,6 +68,9 @@ aggregate calls
 window functions
 other value expression things
 
+extending query expressions
+TODO: write list of features and issues
+partial list:
 select distinct and select all
 union, except, intersect
 offset, fetch
@@ -79,36 +84,52 @@ tableref function
 group by extensions
 order by asc, desc, nulls first/last
 
-etc.
+position annotation
 
-idea: keep adding stuff to simple-sql-parser until have good coverage
-of ansi sql queries. Then develop from the tutorial parser to get the
-same features, but in a more disciplined way so all the changes can
-become tutorials.
+dialect support + testing
 
+separate lexer (investigate simplicity of code, accurate
+  parse/modify/pretty print, speed, error messages)
 
+quasi quotes
+
+---------
+
+co-ordination:
+
+keep working on simple-sql-parser in parallel to add the complete set
+of features for the ansi sql support
+
+then create steps to get to this point from this tutorial parser, so
+the original simple-sql-parser code will be completely discarded.
+
+start working on extended package which can replace hssqlppp:
+typechecking + ddl, procedural, etc. Should use uuagc?
 
 --
 
-review and remove explicit explanations where feasible
+Follow up tutorials/projects
 
+simple implementation of limited sql queries via physical operators in
+Haskell
 
-extended package which can replace hssqlppp: typechecking + ddl,
-procedural, etc.
-
-simple implementation of sql via physical operators
-
-implementing sql aggregates article
+implementing sql aggregates article -> focus on the transformation
+from SQL to physical operators
 
 in depth discussion of sql query syntax, the meaning, implementation
   notes and syntax choice notes
 
 article about window functions?
 
+maybe simple hybrid implementation of selectlists and where with
+haskell and c++, can talk about some design choices and some
+optimisation of the select lists, plus have some serious c++ code.
+
+c++ parser
+
 --
 
-
-maybe this should come layer in a document:
+maybe this should come later in a document:
 
 introduction:
 what is parsing, parse tree, ast, pretty printing, (+semantic

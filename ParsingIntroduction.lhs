@@ -13,17 +13,15 @@ parsec docs on hackage, other parser combinator libs (uu, trifecta?)
 
 This file is a Literate Haskell file, available here: TODO
 
-You should download this lhs file, and follow along in your favourite
-editor, and use ghci to experiment.
+I recommend you download this lhs file, and follow along in your
+favourite editor, and use ghci to experiment.
 
 > import qualified Text.Parsec as P
 > import Text.Parsec (anyChar, eof, manyTill, oneOf, many1, letter, char, choice, try, satisfy, digit, string, anyToken,chainl1,between)
 > import qualified Text.Parsec.String as P (Parser)
 > import Control.Applicative ((<$>), (<*>), (<$), (<*), (*>), (<|>), many)
 > import Control.Monad (void, ap)
-> import Control.Monad.Identity (Identity)
 > import Data.Char (isLetter, isDigit)
-> import qualified Text.Parsec.Expr as E
 
 = Getting started
 
@@ -38,9 +36,19 @@ so the return type is P.Parser Char. The P.Parser type is in the
 module Text.Parsec.String. We will cover this in more detail later.
 
 You should always use a type signature with these parsers. Because the
-Parsec is quite generalized, without the type GHC doesn't have enough
-information to compile this code. Try commenting out the type
-signature above and loading into ghci to see the error message.
+Parsec code is really generalized, without the type GHC will refuse to
+compile this code. Try commenting out the type signature above and
+loading into ghci to see the error message.
+
+You can get this code to compile without a type signature by using the
+NoMonomorphismRestriction language pragma. You can also see the type
+signature that GHC will choose for this function by commenting the
+type signature and using -Wall and -XNoMonomorphismRestriction
+together. It's up to you whether you prefer to always write type
+signatures when you are developing parsing code, or use the
+NoMonomorphismRestriction pragma. If you make a mistake, when using
+type signatures you usually get much more easier to understand
+compiler error messages.
 
 Let's use this parser. Change to the directory where you saved this
 .lhs file, and run ghci. Then type in ':l ParsingIntroduction.lhs'. You
@@ -485,9 +493,7 @@ Here is another way to write the numOrVar parser:
 > numOrVar' = num' <|> var'
 
 In general, you can write 'choice [p0, p1, p2, ...]' as 'p0 <|> p1 <|>
-p2 <|> ...'. I think for two choices, sometimes <|> is more readable,
-but a lot of the time I prefer 'choice' since the layout of the source
-code is better.
+p2 <|> ...'.
 
 TODO: a bunch of examples
 
@@ -562,10 +568,12 @@ again.
 
 Let's look at another problem:
 
+~~~~
 *Main> parseWithWhitespace simpleExpr''' " 1 + 1 + 1"
 Left (line 1, column 8):
 unexpected '+'
 expecting end of input
+~~~~
 
 Our parser will only parse one operator, and not a chain of them.
 
@@ -573,16 +581,16 @@ Here is one way to solve it:
 
 > simpleExpr4 :: P.Parser SimpleExpr
 > simpleExpr4 = do
->     e <- factor
+>     e <- term
 >     maybeAddSuffix e
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 = do
 >         void $ char '+'
 >         whiteSpace
->         e1 <- factor
+>         e1 <- term
 >         maybeAddSuffix (Add e0 e1)
->     factor =  num' <|> var' <|> parens'
+>     term = num' <|> var' <|> parens'
 
 TODO: explain how this works in much more detail
 
@@ -622,7 +630,7 @@ Here is the all the parser code written out again for clarity.
 
 > simpleExprD :: P.Parser SimpleExpr
 > simpleExprD = do
->     e <- factor
+>     e <- term
 >     maybeAddSuffix e
 >   where
 >     maybeAddSuffix e =
@@ -631,9 +639,9 @@ Here is the all the parser code written out again for clarity.
 >     addSuffix e0 = do
 >         void $ char '+'
 >         whiteSpace
->         e1 <- factor
+>         e1 <- term
 >         maybeAddSuffix (Add e0 e1)
->     factor = numD <|> varD <|> parensD
+>     term = numD <|> varD <|> parensD
 
 
 == Testing with the examples
@@ -689,26 +697,36 @@ read when you are familiar with it.
 
 This pattern 'scales', you can use:
 
+~~~~
 Ctor <$> pa
+~~~~
 
 for a single argument constructor. This might also be familiar to you
 as
 
+~~~~
 fmap Ctor pa
+~~~~
 
 or
 
+~~~~
 Ctor `fmap` pa
+~~~~
 
 All of which mean the same thing, just slightly different spellings.
 
 This can also be written using Monad operators:
 
+~~~~
 pa >>= liftM ctor
+~~~~
 
 or
 
+~~~~
 liftM ctor =<< pa
+~~~~
 
 (liftM is in Control.Monad)
 
@@ -717,7 +735,9 @@ fmap and <$>.
 
 You can use
 
+~~~~
 Ctor <$> pa <*> pb <*> pc
+~~~~
 
 for three args, and so on. So you use <$> between the pure Ctor and
 the first arg, then <*> between each subsequent arg.
@@ -755,14 +775,18 @@ Now we can move the Num constructor:
 
 How can we get rid of the whitespace. Here is an additional operator (<*), which can be used:
 
+~~~~
 a <* b
+~~~~
 
 is equivalent to
 
+~~~~
 do
     x <- a
     void b
     return x
+~~~~
 
 Here it is in use in the function.
 
@@ -794,6 +818,7 @@ integer in another context.
 
 here is the old var parser:
 
+~~~~
 varD :: P.Parser SimpleExpr
 varD = do
     fl <- firstChar
@@ -803,6 +828,7 @@ varD = do
   where
     firstChar = satisfy (\a -> isLetter a || a == '_')
     nonFirstChar = satisfy (\a -> isDigit a || isLetter a || a == '_')
+~~~~
 
 The first thing we can do is to make the firstChar and nonFirstChar a
 little easier to read:
@@ -843,6 +869,7 @@ It looks almost like a grammar description now.
 
 Here is the starting point:
 
+~~~~
 parensD :: P.Parser SimpleExpr
 parensD = do
     void $ char '('
@@ -851,6 +878,7 @@ parensD = do
     void $ char ')'
     whiteSpace
     return $ Parens e
+~~~~
 
 Here you can see that there is a (*>) which works in the opposite
 direction to (<*), and that these functions - (<*), (*>) - can be
@@ -877,64 +905,66 @@ TODO: rewrite this text it is a mess
 
 Here is the old version
 
+~~~~
 simpleExprD :: P.Parser SimpleExpr
 simpleExprD = do
-    e <- factor
+    e <- term
     maybeAddSuffix e
   where
     maybeAddSuffix e = addSuffix e <|> return e
     addSuffix e0 = do
         void $ char '+'
         whiteSpace
-        e1 <- factor
+        e1 <- term
         maybeAddSuffix (Add e0 e1)
-    factor = numD <|> varD <|> parensD
+    term = numD <|> varD <|> parensD
+~~~~
 
 Start with the function body, convert to point free style.
 
 > simpleExprA0 :: P.Parser SimpleExpr
-> simpleExprA0 = factor >>= maybeAddSuffix
+> simpleExprA0 = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 = do
 >         void $ char '+'
 >         whiteSpace
->         e1 <- factor
+>         e1 <- term
 >         maybeAddSuffix (Add e0 e1)
->     factor = numD <|> varD <|> parensD
+>     term = numD <|> varD <|> parensD
 
 Now rewrite the main part of the addSuffix function:
 
 > simpleExprA1 :: P.Parser SimpleExpr
-> simpleExprA1 = factor >>= maybeAddSuffix
+> simpleExprA1 = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 = do
->         e1 <- char '+' *> whiteSpace *> factor
+>         e1 <- char '+' *> whiteSpace *> term
 >         maybeAddSuffix (Add e0 e1)
->     factor = numD <|> varD <|> parensD
+>     term = numD <|> varD <|> parensD
 
 now combine the Add ctor call into one line
 
 > simpleExprA2 :: P.Parser SimpleExpr
-> simpleExprA2 = factor >>= maybeAddSuffix
+> simpleExprA2 = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 = do
->         ae <- Add e0 <$> (char '+' *> whiteSpace *> factor)
+>         ae <- Add e0 <$> (char '+' *> whiteSpace *> term)
 >         maybeAddSuffix ae
->     factor = numD <|> varD <|> parensD
+>     term = numD <|> varD <|> parensD
 
 now simplify the addSuffix function to make it point free.
 
 > simpleExprA3 :: P.Parser SimpleExpr
-> simpleExprA3 = factor >>= maybeAddSuffix
+> simpleExprA3 = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 =
->         Add e0 <$> (char '+' *> whiteSpace *> factor)
+>         Add e0 <$> (char '+' *> whiteSpace *> term)
 >         >>= maybeAddSuffix
->     factor = numD <|> varD <|> parensD
+>     term = numD <|> varD <|> parensD
 
 TODO: use chainl here and an additional step. Alter the code lower
 down to match this change.
@@ -958,12 +988,12 @@ Here is the finished job for all the simple expression code.
 >                        <* char ')' <* whiteSpace)
 
 > simpleExprA' :: P.Parser SimpleExpr
-> simpleExprA' = factor >>= maybeAddSuffix
+> simpleExprA' = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
 >     addSuffix e0 =
->         (Add e0 <$> (char '+' *> whiteSpace *> factor)) >>= maybeAddSuffix
->     factor = numA' <|> varA' <|> parensA'
+>         (Add e0 <$> (char '+' *> whiteSpace *> term)) >>= maybeAddSuffix
+>     term = numA' <|> varA' <|> parensA'
 
 Here a version with the separate token parsers.
 
@@ -1000,11 +1030,11 @@ The expression parsers:
 > parensA = Parens <$> betweenParens simpleExprA
 
 > simpleExprA :: P.Parser SimpleExpr
-> simpleExprA = factor >>= maybeAddSuffix
+> simpleExprA = term >>= maybeAddSuffix
 >   where
 >     maybeAddSuffix e = addSuffix e <|> return e
->     addSuffix e0 = (Add e0 <$> (symbol '+' *> factor)) >>= maybeAddSuffix
->     factor = numA <|> varA <|> parensA
+>     addSuffix e0 = (Add e0 <$> (symbol '+' *> term)) >>= maybeAddSuffix
+>     term = numA <|> varA <|> parensA
 
 Splitting the lexer parser layer out means that we have one place
 where we have to remember to add the ignore whitespace suffixes, and I
@@ -1014,10 +1044,10 @@ Here is a version of simpleExprA using the chainl1 function from
 Text.Parsec.Combinator:
 
 > simpleExprAC :: P.Parser SimpleExpr
-> simpleExprAC = chainl1 factor op
+> simpleExprAC = chainl1 term op
 >   where
 >     op = symbol '+' *> return Add
->     factor = numA <|> varA <|> parensA
+>     term = numA <|> varA <|> parensA
 
 The chainl1 simplified type is like this:
 
@@ -1028,8 +1058,20 @@ Parser a -> Parser (a -> a -> a) -> Parser a
 You pass it the function to parse a single element, then a parser
 which parses the operator concrete syntax, and returns a function
 which combines two elements using the operator abstract syntax, and it
-does all the work. So the 'op' function here parses a plus symbol,
-then returns the Add ctor, whose type signature is what we want:
+does all the work.
+
+To break it down: chainl1 will use the term parser to parse a
+'term'. Then it will use the op parser. This parser must parse the
+operator syntax only, and if it parses successfully, return a function
+which can combine two expressions into the operator application
+expression (a -> a -> a). chainl1 will then parse another term, and
+then apply this function to combine the original term and the new
+term.
+
+TODO: maybe write a diagram sequence to illustrate instead.
+
+The 'op' function here parses a plus symbol, then returns the Add
+ctor, whose type signature is what we want:
 
 ~~~~
 Add :: SimpleExpr -> SimpleExpr -> SimpleExpr
@@ -1071,6 +1113,7 @@ TODO: examples
 
 ~~~~
 between :: Parser open -> Parser close -> Parser a -> Parser a
+~~~~
 
 Haddock: between open close p parses open, followed by p and close. Returns the
 value returned by p.
@@ -1393,7 +1436,9 @@ underlying monad m and return type a.
 
 The full types that you see like this:
 
+~~~~
 satisfy :: Stream s m Char => (Char -> Bool) -> ParsecT s u m Char
+~~~~
 
 refer to the same things (stream type s, user state type u, underlying
 monad m).

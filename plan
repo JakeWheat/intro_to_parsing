@@ -1,0 +1,126 @@
+TODO:
+
+work on simple-sql-parser: review the changes in this code to update
+it, especially giving up and using the parsec Expr to get a new
+release done asap.
+
+work on parsing tutorial:
+lots of little todos
+big ones are
+1. using chainl in the simple expression parser
+2. the expr, perm and token tutorials
+
+blockers are: chainl and text.parsec.expr
+
+maybe separate out the modules at the end
+
+value expressions
+main one is use text.parsec.expr in operator parsing
+
+then can finish outline of value expressions
+
+create a refactored value expressions for use in the query expressions
+query expressions: expand and do simple from clause parser
+
+do the from clause tutorial
+
+pretty printing, writing some tests
+
+error messages and refactoring the parsers
+
+refactored project, cabal package
+
+extending the value expressions (multiple docs?)
+
+extending the query expressions (mulitple docs?)
+
+adding:
+position annotation
+quasiquotes
+dialects
+separate lexer (investigate simplicity of code, accurate
+  parse/modify/pretty print, speed, error messages)
+
+
+
+---------
+
+TODO:
+
+
+then create a set of files with the plain complete parser without the
+tutorial information.
+
+Follow ups: create a task list to produce the full parser from this
+tutorial parser. Create a short article about each stage.
+
+left factor expression parser
+number literals
+typed literal
+subqueries
+full dotted
+quoted identifiers/ names
+more operators + trickiness with between
+splitting the operator ast ctor
+aggregate calls
+window functions
+other value expression things
+
+select distinct and select all
+union, except, intersect
+offset, fetch
+explicit table, table value constructor
+cte
+full table alias
+* as (a,b,c)
+dotted identifiers in table names, etc.
+lateral
+tableref function
+group by extensions
+order by asc, desc, nulls first/last
+
+etc.
+
+idea: keep adding stuff to simple-sql-parser until have good coverage
+of ansi sql queries. Then develop from the tutorial parser to get the
+same features, but in a more disciplined way so all the changes can
+become tutorials.
+
+
+
+--
+
+review and remove explicit explanations where feasible
+
+
+extended package which can replace hssqlppp: typechecking + ddl,
+procedural, etc.
+
+simple implementation of sql via physical operators
+
+implementing sql aggregates article
+
+in depth discussion of sql query syntax, the meaning, implementation
+  notes and syntax choice notes
+
+article about window functions?
+
+--
+
+
+maybe this should come layer in a document:
+
+introduction:
+what is parsing, parse tree, ast, pretty printing, (+semantic
+  checking, optimisation, intepreting, compiling)
+  parse trees, abstract and concrete syntax, abstract interpretation
+what is parsing good for: replaces regexes, can be used for dsls and
+  for working in a heterogenous system
+
+what can the SQL parser be used for
+
+document creation:
+text + syntax highlighting: use pandoc/markdown?
+document structure + nav ??
+diagramming tools: declarative language + drawn
+interactive prompts

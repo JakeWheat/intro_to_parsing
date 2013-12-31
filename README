@@ -1,0 +1,66 @@
+WIP, a tutorial which demonstrates the basics of Parsec and then builds a
+limit SQL query parser.
+
+TOC:
+
+ParsingIntroduction.lhs
+
+introduces basic parsing with Parsec with lots of examples
+
+ParsecExtras.lhs
+
+covers three higher level modules which come with Parsec,
+Text.Parsec.Expr for expression parsing, Text.Parsec.Perm for
+permutaion parsing, and Text.Parsec.Token for creating token parsers
+easily.
+
+ValueExpressions.lhs
+
+This covers building a parser a subset of value expressions from SQL.
+
+QueryExpressions.lhs
+
+This covers building a parser to parse query expressions with select
+lists, simple from, where, group by, having and order by.
+
+FromClause.lhs
+
+This extend the parser for query expressions to support a from clause
+with much more features including joins.
+
+Additional documents not yet started:
+
+pretty printing
+
+writing tests
+
+error messages
+
+refactored project + cabal package
+
+extending value expressions to cover more features
+
+extending query expressions to cover more features
+
+adding:
+position annotation
+dialects
+separate lexer
+quasiquotes
+
+Extras:
+
+ParseString.lhs
+
+an executable which contains the boilerplate to run a parsec parser on
+a string passed as an argument
+
+ParseFile.lhs
+
+an executable which contains the boilerplate to run a parsec parser on
+a file passed as an argument
+
+
+Contact: jakewheatmail@gmail.com
+
+License: BSD3

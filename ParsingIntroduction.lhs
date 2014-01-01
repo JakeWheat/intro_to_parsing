@@ -17,28 +17,13 @@ favourite editor, and use ghci to experiment. To download, use:
 git clone https://github.com/JakeWheat/intro_to_parsing.git
 ```
 
-TODO: experiment: create wrapper modules for all the interesting stuff
-in parsec, which fixes the parser types to use
-Text.Parsec.String.Parser. This should make things much simpler for
-beginners, especially reading the code and dealing with error
-messages.
-
-modules:
-parse, ParseError from somewhere
-Text.Parsec.Char
-Text.Parsec.Combinator
-
 > import Text.Parsec (ParseError)
 > import Text.Parsec.String (Parser)
-
 > import Text.Parsec.String.Parsec (try, parse)
-
 > import Text.Parsec.String.Char (anyChar, oneOf, char, digit
 >                                ,string, letter, satisfy)
-
 > import Text.Parsec.String.Combinator (eof,manyTill, many1, choice
 >                                      ,anyToken,chainl1, between)
-
 > import Control.Applicative ((<$>), (<*>), (<$), (<*), (*>), (<|>), many)
 > import Control.Monad (void, ap)
 > import Data.Char (isLetter, isDigit)
@@ -169,7 +154,8 @@ This can be used to quickly try out new ad hoc parsers.
 = Type signatures
 
 TODO: update with new wrapper types which mean all this nonsense can
-be delayed to much later.
+be delayed to much later. Instead, a quick note here about the
+wrappers and how they help.
 
 I think you should always use type signatures with Parsec. Because the
 Parsec code is really generalized, without the type GHC will refuse to

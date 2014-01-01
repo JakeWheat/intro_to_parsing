@@ -16,12 +16,21 @@ review and remove explicit explanations where feasible, replace with
 more examples
 
 break up parsing introduction into several docs, it's huge
+1. IntroductionToParsing + Text.Parsec.Char review
+2. SimpleExpressionParser
+3. Text.Parsec.Combinators + Control.Applicative review
+4. Helper functions module + notes
 
 maybe have a sequence of docs for expression parsing, in the middle
 will be the simple sql value expression parser
 
 maybe split parsecextras file into three also?
 
+value expressions: start with the basic one in the first tutorial then
+have the one in the Expr tutorial then extend this with the simplified
+sql parser set of operators then create a new parser with each new
+ctor one at a time. This way can also do the naive thing first, then
+talk about how to deal with the problems that come up.
 
 documents which need finishing off:
 

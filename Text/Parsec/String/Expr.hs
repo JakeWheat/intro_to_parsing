@@ -14,6 +14,8 @@ Wrappers for the Text.Parsec.Expr module with simplified types.
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Expr as E
 
+-- not sure if this is neccessary, or a type alias would be good
+-- enough
 data Operator a = Infix (Parser (a -> a -> a)) E.Assoc
                 | Prefix (Parser (a -> a))
                 | Postfix (Parser (a -> a))

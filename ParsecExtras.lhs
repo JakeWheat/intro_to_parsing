@@ -21,12 +21,14 @@ means you have to replace it with something more flexible later on.
 
 
 > --import qualified Text.Parsec as P
-> import Text.Parsec (oneOf, many1, letter, char, digit, string)
-> import qualified Text.Parsec.String as P (Parser)
+> import Text.Parsec.String (Parser)
+> import Text.Parsec.String.Combinator (many1)
+> import Text.Parsec.String.Char (letter, char, digit, string, oneOf)
+
 > import Control.Applicative ((<$>), (<*>), (<*), (<|>), many)
 > import Control.Monad (void)
-> import Control.Monad.Identity (Identity)
-> import qualified Text.Parsec.Expr as E
+
+> import qualified Text.Parsec.String.Expr as E
 
 
 = Text.Parsec.Expr
@@ -127,13 +129,13 @@ Here is the abstract syntax type:
 
 Here is the new expression parser:
 
-> simpleExpr2 :: P.Parser SimpleExpr2
+> simpleExpr2 :: Parser SimpleExpr2
 > simpleExpr2 = E.buildExpressionParser table term
 
-> term :: P.Parser SimpleExpr2
+> term :: Parser SimpleExpr2
 > term = var2 <|> num2
 
-> table :: [[E.Operator String () Identity SimpleExpr2]]
+> table :: [[E.Operator SimpleExpr2]]
 > table = [[prefix "-", prefix "+"]
 >         ,[binary "^" E.AssocLeft]
 >         ,[binary "*" E.AssocLeft
@@ -158,13 +160,14 @@ Here is the new expression parser:
 
 TODO: expand and explain the bits.
 
-> num2 :: P.Parser SimpleExpr2
+> num2 :: Parser SimpleExpr2
 > num2 = Num2 <$> integer
 
-> var2 :: P.Parser SimpleExpr2
+> var2 :: Parser SimpleExpr2
 > var2 = Var2 <$> identifier
 
-TODO: write lots of parsing examples, including parse failures with ambiguity.
+TODO: write lots of parsing examples, including parse failures with
+ambiguity.
 
 issue: double prefix op.
 
@@ -181,13 +184,13 @@ parsers instead of writing them by hand.
 TODO: examples
 
 
-> whiteSpace :: P.Parser ()
+> whiteSpace :: Parser ()
 > whiteSpace = void $ many $ oneOf " \n\t"
 
-> integer :: P.Parser Integer
+> integer :: Parser Integer
 > integer = read <$> many1 digit <* whiteSpace
 
-> identifier :: P.Parser String
+> identifier :: Parser String
 > identifier = (:) <$> firstChar <*> many nonFirstChar <* whiteSpace
 >   where
 >     firstChar = letter <|> char '_'

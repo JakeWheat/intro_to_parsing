@@ -10,7 +10,7 @@ TODO: qualify or add explicit imports
 
 > --import Text.Groom (groom)
 > --import qualified Text.Parsec as P
-> import qualified Text.Parsec.String as P
+> import Text.Parsec.String (Parser)
 > import Text.Parsec (try,optionMaybe, optional, sepBy1,option)
 > import Control.Applicative ((<$>),(*>),(<*>))
 > --import Control.Monad (void,guard)
@@ -115,7 +115,7 @@ select [value expr]
 > parseSingleSelectItemTestData =
 >     [("select 1", makeSelect {qeSelectList = [(NumberLiteral 1,Nothing)]})]
 
-> singleSelectItem :: P.Parser QueryExpr
+> singleSelectItem :: Parser QueryExpr
 > singleSelectItem = do
 >     keyword_ "select"
 >     e <- valueExpr
@@ -124,14 +124,14 @@ select [value expr]
 Here is an example where rewriting to use applicative can make the
 parser code much less clear:
 
-> singleSelectItemApplicative :: P.Parser QueryExpr
+> singleSelectItemApplicative :: Parser QueryExpr
 > singleSelectItemApplicative =
 >     (\sl -> makeSelect {qeSelectList = sl})
 >     <$> (keyword_ "select" *> (((:[]) . (,Nothing)) <$> valueExpr))
 
 Using a helper function can make this version more readable:
 
-> singleSelectItemApplicative' :: P.Parser QueryExpr
+> singleSelectItemApplicative' :: Parser QueryExpr
 > singleSelectItemApplicative' =
 >     ms <$> (keyword_ "select" *> valueExpr)
 >   where
@@ -152,12 +152,12 @@ select 1+2, 3+4;
 >                                  ,(Identifier "b",Nothing)]})
 >     ,("select 1+2,3+4"
 >      ,makeSelect {qeSelectList =
->                      [(Op "+" [NumberLiteral 1,NumberLiteral 2],Nothing)
->                      ,(Op "+" [NumberLiteral 3,NumberLiteral 4],Nothing)]})
+>                      [(BinaryOp (NumberLiteral 1) "+" (NumberLiteral 2),Nothing)
+>                      ,(BinaryOp (NumberLiteral 3) "+" (NumberLiteral 4),Nothing)]})
 >     ]
 
 
-> selectMultipleItems :: P.Parser QueryExpr
+> selectMultipleItems :: Parser QueryExpr
 > selectMultipleItems = do
 >     keyword_ "select"
 >     es <- commaSep1 valueExpr
@@ -165,7 +165,7 @@ select 1+2, 3+4;
 
 Here is another helper parser which will be used a lot.
 
-> commaSep1 :: P.Parser a -> P.Parser [a]
+> commaSep1 :: Parser a -> Parser [a]
 > commaSep1 = (`sepBy1` symbol_ ",")
 
 == aliases
@@ -194,20 +194,20 @@ blacklist identifier parser
 Finally, here is the select list parser and the helper for select
 items:
 
-> selectItem :: P.Parser (ValueExpr, Maybe String)
+> selectItem :: Parser (ValueExpr, Maybe String)
 > selectItem = (,) <$> valueExpr <*> optionMaybe (try alias)
 >   where alias = optional (try (keyword_ "as")) *> identifierString
 
 TODO: note about optional in parsec and in applicative
 
 
-> selectList :: P.Parser [(ValueExpr, Maybe String)]
+> selectList :: Parser [(ValueExpr, Maybe String)]
 > selectList = try (keyword_ "select") *> commaSep1 selectItem
 
 
 = simplified from clause
 
-> from :: P.Parser [TableRef]
+> from :: Parser [TableRef]
 > from = option [] (try (keyword_ "from") *> (mkFrom <$> identifierString))
 >   where mkFrom f = [SimpleTableRef f]
 
@@ -226,10 +226,10 @@ The where, group by, having, and order by parsers are simple.
 >     [("select a from t where a = 5"
 >      ,makeSelect {qeSelectList = [(Identifier "a",Nothing)]
 >                  ,qeFrom = [SimpleTableRef "t"]
->                  ,qeWhere = Just $ Op "=" [Identifier "a", NumberLiteral 5]})
+>                  ,qeWhere = Just $ BinaryOp (Identifier "a") "=" (NumberLiteral 5)})
 >     ]
 
-> swhere :: P.Parser (Maybe ValueExpr)
+> swhere :: Parser (Maybe ValueExpr)
 > swhere = optionMaybe (try (keyword_ "where") *> valueExpr)
 
 = group by
@@ -251,7 +251,7 @@ The where, group by, having, and order by parsers are simple.
 >                  })
 >     ]
 
-> sgroupBy :: P.Parser [ValueExpr]
+> sgroupBy :: Parser [ValueExpr]
 > sgroupBy = option [] (try (keyword_ "group")
 >                       *> keyword_ "by"
 >                       *> commaSep1 valueExpr)
@@ -265,11 +265,11 @@ The where, group by, having, and order by parsers are simple.
 >                                  ,(App "sum" [Identifier "b"],Nothing)]
 >                  ,qeFrom = [SimpleTableRef "t"]
 >                  ,qeGroupBy = [Identifier "a"]
->                  ,qeHaving = Just $ Op ">" [App "sum" [Identifier "b"], NumberLiteral 5]
+>                  ,qeHaving = Just $ BinaryOp (App "sum" [Identifier "b"]) ">" (NumberLiteral 5)
 >                  })
 >   ]
 
-> having :: P.Parser (Maybe ValueExpr)
+> having :: Parser (Maybe ValueExpr)
 > having = optionMaybe (try (keyword_ "having") *> valueExpr)
 
 = order by
@@ -286,14 +286,14 @@ The where, group by, having, and order by parsers are simple.
 >                       ,qeFrom = [SimpleTableRef "t"]
 >                       ,qeOrderBy = o}
 
-> orderBy :: P.Parser [ValueExpr]
+> orderBy :: Parser [ValueExpr]
 > orderBy = option [] (try (keyword_ "order")
 >                      *> keyword_ "by"
 >                      *> commaSep1 valueExpr)
 
 = putting together the query expression parser
 
-> queryExpr :: P.Parser QueryExpr
+> queryExpr :: Parser QueryExpr
 > queryExpr =
 >     Select
 >     <$> selectList

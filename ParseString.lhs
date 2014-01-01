@@ -6,7 +6,7 @@ below.
 
 > import System.Environment
 > import Text.Parsec
-> import Text.Parsec.String as P
+> import Text.Parsec.String
 > import Control.Monad
 
 > main :: IO ()
@@ -18,7 +18,7 @@ below.
 
 This is the parser which you can replace with your own code:
 
-> myParser :: P.Parser ()
+> myParser :: Parser ()
 > myParser = void $ string "correct"
 
 Here is an example of running this program:

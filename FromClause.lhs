@@ -10,8 +10,9 @@ TODO: qualify or add explicit imports
 
 > --import Text.Groom (groom)
 > --import qualified Text.Parsec as P
-> import qualified Text.Parsec.String as P
-> import Text.Parsec (try,optional, option,choice)
+> import Text.Parsec.String (Parser)
+> import Text.Parsec.String.Parsec (try)
+> import Text.Parsec.String.Combinator (optional, option,choice)
 > import Control.Applicative ((<$>),(*>),(<*>), (<$))
 > --import Control.Monad (void,guard)
 > --import Debug.Trace
@@ -106,7 +107,7 @@ because of all the keywords.
 
 TODO: try and simplify this code some more.
 
-> from :: P.Parser [TableRef]
+> from :: Parser [TableRef]
 > from = option [] (try (keyword_ "from") *> commaSep1 tref)
 >   where
 >     tref = choice [try (JoinQueryExpr <$> parens queryExpr)
@@ -149,5 +150,5 @@ TODO: try and simplify this code some more.
 Here is another small helper parser. Having the arguments in this
 order makes it easy to chain using >>=.
 
-> optionSuffix :: (a -> P.Parser a) -> a -> P.Parser a
+> optionSuffix :: (a -> Parser a) -> a -> Parser a
 > optionSuffix p a = option a (p a)

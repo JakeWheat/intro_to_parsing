@@ -1,11 +1,27 @@
 TODO:
 
+replace ~~~~ with ``` which seems to be more standard and works on
+fpcomplete site as well as with pandoc
+
+make request for fpcomplete tutorials to support > for lhs files
+instead of for blockquotes. Otherwise, will have to write a filter
+which wraps > sections with ```haskell before pasting into fpcomplete.
+
+investigate how embedded code can be made runnable within the tutorial
+on fpcomplete
+
+add ` for embedded code
+
 review and remove explicit explanations where feasible, replace with
 more examples
 
-try and create a script to render, something like:
-pandoc --from=markdown+lhs --to=html ParsingIntroduction.lhs -o ParsingIntroduction.lhs.html -c main.css --toc
-for all the files. Investigate how it will look when uploaded to fp
+break up parsing introduction into several docs, it's huge
+
+maybe have a sequence of docs for expression parsing, in the middle
+will be the simple sql value expression parser
+
+maybe split parsecextras file into three also?
+
 
 documents which need finishing off:
 
@@ -44,11 +60,17 @@ error messages:
 explore what error messages it produces and look at how the parsers
 can be rearranged for better error messages
 
+more on parsec internals? Maybe implementing a simple parser
+combinator library, then understand the implementation of parsec and
+choices
+
 refactored project:
 
 create a new branch in simple-sql-parser, document how the files are
 created, laid out and the cabal and extra stuff created. Maybe talk
 about the website also. links to stuff about creating packages
+
+annotated run through of the ANSI SQL grammar
 
 extending value expressions
 

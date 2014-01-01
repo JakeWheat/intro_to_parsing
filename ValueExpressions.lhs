@@ -8,15 +8,16 @@ to the simple expressions used in the last tutorial.
 > module ValueExpressions where
 
 > import Text.Groom (groom)
-> import qualified Text.Parsec as P
-> import qualified Text.Parsec.String as P
-> import Text.Parsec (oneOf,digit,many1,string,manyTill,anyChar,eof,choice,char,letter,between,sepBy,try,optionMaybe,alphaNum)
+> import Text.Parsec.String (Parser)
+> import Text.Parsec.String.Char (oneOf, digit, string, anyChar, char, letter, alphaNum)
+> import Text.Parsec.String.Combinator (many1, manyTill, eof, choice, between, sepBy, optionMaybe)
+> import Text.Parsec.String.Parsec(try,parse)
+
 > import Control.Applicative (many, (<*),(<$>), (*>), (<|>),(<$),(<*>))
 > import Control.Monad (void,guard)
 > --import Debug.Trace
 > import Data.List (intercalate)
-> import qualified Text.Parsec.Expr as E
-> import Control.Monad.Identity (Identity)
+> import qualified Text.Parsec.String.Expr as E
 
 Our value expressions will support literals, identifiers, asterisk,
 some simple operators, case expression and parentheses. Here is the
@@ -170,7 +171,7 @@ parsers for each of these variants.
 
 Here is the whitespace parser which skips comments also
 
-> whiteSpace :: P.Parser ()
+> whiteSpace :: Parser ()
 > whiteSpace =
 >     choice [simpleWhiteSpace *> whiteSpace
 >            ,lineComment *> whiteSpace
@@ -203,40 +204,40 @@ It doesn't support non integral number literals.
 
 We already saw how to write these parsers:
 
-> integer :: P.Parser Integer
+> integer :: Parser Integer
 > integer = read <$> many1 digit <* whiteSpace
 
-> integerLiteral :: P.Parser ValueExpr
+> integerLiteral :: Parser ValueExpr
 > integerLiteral = NumberLiteral <$> integer
 
 String literals:
 
-> stringLiteral :: P.Parser ValueExpr
+> stringLiteral :: Parser ValueExpr
 > stringLiteral = StringLiteral <$> (symbol_ "'" *> manyTill anyChar (symbol_ "'"))
 
 Here is the symbol parser. I've created a wrapper which uses void
 which can be used to avoid writing void in lots of places.
 
-> symbol :: String -> P.Parser String
+> symbol :: String -> Parser String
 > symbol s = string s <* whiteSpace
 
-> symbol_ :: String -> P.Parser ()
+> symbol_ :: String -> Parser ()
 > symbol_ s = void $ symbol s
 
 TODO: suffix issues with symbol parser
 
 Here is the parser which can parse either kind of literal:
 
-> literal :: P.Parser ValueExpr
+> literal :: Parser ValueExpr
 > literal = integerLiteral <|> stringLiteral
 
 Here is a small helper function to check the examples above. I've put
 the test data and the parser as parameters so we can reuse it later.
 
-> checkParse :: (Eq a, Show a) => P.Parser a -> [(String,a)] -> IO ()
+> checkParse :: (Eq a, Show a) => Parser a -> [(String,a)] -> IO ()
 > checkParse parser testData = do
 >     let -- create a wrapper function which uses the parser function
->         parseit = P.parse (whiteSpace *> parser <* eof) ""
+>         parseit = parse (whiteSpace *> parser <* eof) ""
 >         -- parse all the input strings
 >         parsed = map (parseit . fst) testData
 >         triples = zip testData parsed
@@ -290,7 +291,7 @@ Some examples:
 
 Here a parser for the identifier token
 
-> identifierString' :: P.Parser String
+> identifierString' :: Parser String
 > identifierString' =
 >     (:) <$> letterOrUnderscore
 >         <*> many letterDigitOrUnderscore <* whiteSpace
@@ -300,7 +301,7 @@ Here a parser for the identifier token
 
 and a parser for identifier expressions
 
-> identifier' :: P.Parser ValueExpr
+> identifier' :: Parser ValueExpr
 > identifier' = Identifier <$> identifierString
 
 We can check these parsers at the ghci prompt using 'checkParse
@@ -314,7 +315,7 @@ There will be an issue with this parser which will be covered later.
 > parseDottedIdentifierTestData =
 >     [("t.a", DIdentifier "t" "a")]
 
-> dottedIdentifier :: P.Parser ValueExpr
+> dottedIdentifier :: Parser ValueExpr
 > dottedIdentifier = DIdentifier <$> identifierString
 >                                <*> (symbol_ "." *> identifierString)
 
@@ -325,7 +326,7 @@ There will be an issue with this parser which will be covered later.
 >     [("*", Star)
 >     ,("t.*", DStar "t")]
 
-> star :: P.Parser ValueExpr
+> star :: Parser ValueExpr
 > star = choice [Star <$ symbol_ "*"
 >               ,DStar <$> (identifierString <* symbol_ "." <* symbol_ "*")]
 
@@ -341,15 +342,15 @@ function application: f(), f(a), f(a,b), etc.
 
 The valueExpr parser will appear later.
 
-> app :: P.Parser ValueExpr
+> app :: Parser ValueExpr
 > app = App <$> identifierString <*> parens (commaSep valueExpr)
 
 There are two new helper parsers:
 
-> parens :: P.Parser a -> P.Parser a
+> parens :: Parser a -> Parser a
 > parens = between (symbol_ "(") (symbol_ ")")
 
-> commaSep :: P.Parser a -> P.Parser [a]
+> commaSep :: Parser a -> Parser [a]
 > commaSep = (`sepBy` symbol_ ",")
 
 == case
@@ -376,7 +377,7 @@ Here are the examples/tests for case.
 
 Here is the parser:
 
-> scase :: P.Parser ValueExpr
+> scase :: Parser ValueExpr
 > scase =
 >     Case <$> (try (keyword_ "case") *> optionMaybe (try valueExpr))
 >          <*> many1 swhen
@@ -391,10 +392,10 @@ same issue as the symbol parser regarding valid suffix characters. It
 suffers from more issues since e.g. keyword 'select' will parse this
 string 'selectx', which is even more wrong.
 
-> keyword :: String -> P.Parser String
+> keyword :: String -> Parser String
 > keyword s = string s <* whiteSpace
 
-> keyword_ :: String -> P.Parser ()
+> keyword_ :: String -> Parser ()
 > keyword_ s = keyword s *> return ()
 
 In fact, it's the same as the symbol parser. We can use this for now
@@ -404,7 +405,7 @@ which uses them.
 
 TODO: put in the identifier with blacklist here: the when issue.
 
-> identifierString :: P.Parser String
+> identifierString :: Parser String
 > identifierString = do
 >     s <- (:) <$> letterOrUnderscore
 >              <*> many letterDigitOrUnderscore <* whiteSpace
@@ -420,14 +421,14 @@ TODO: put in the identifier with blacklist here: the when issue.
 TODO: talk about what must be in the blacklist, and what doesn't need
 to be. This should be later.
 
-> identifier :: P.Parser ValueExpr
+> identifier :: Parser ValueExpr
 > identifier = Identifier <$> identifierString
 
 TODO: follow up on try, error messages.
 
 = parens
 
-> sparens :: P.Parser ValueExpr
+> sparens :: Parser ValueExpr
 > sparens = Parens <$> parens valueExpr
 
 = operators
@@ -435,7 +436,7 @@ TODO: follow up on try, error messages.
 Here is our operator table. I followed the precedences given here:
 http://www.postgresql.org/docs/9.3/static/sql-syntax-lexical.html#SQL-PRECEDENCE
 
-> table :: [[E.Operator String () Identity ValueExpr]]
+> table :: [[E.Operator ValueExpr]]
 > table = [[binary "*" E.AssocLeft
 >          ,binary "/" E.AssocLeft]
 >         ,[binary "+" E.AssocLeft
@@ -472,7 +473,7 @@ expression parser tutorial?
 
 Here is the value expr parser:
 
-> valueExpr :: P.Parser ValueExpr
+> valueExpr :: Parser ValueExpr
 > valueExpr = E.buildExpressionParser table term
 >   where
 >     term = choice [literal

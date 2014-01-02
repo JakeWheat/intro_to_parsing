@@ -24,10 +24,10 @@ means you have to replace it with something more flexible later on.
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Combinator (many1)
 > import Text.Parsec.String.Char (letter, char, digit, string, oneOf)
-
+>
 > import Control.Applicative ((<$>), (<*>), (<*), (<|>), many)
 > import Control.Monad (void)
-
+>
 > import qualified Text.Parsec.String.Expr as E
 
 
@@ -48,74 +48,74 @@ Here are our new operators in precedence order:
 
 == unary + -
 
-~~~~
+```
 +a
 -3
-~~~~
+```
 
 == exponentiation
 
-~~~~
+```
 a ^ 3
-~~~~
+```
 
 associativity: left
 
 == multiplication, division, modulo
 
-~~~~
+```
 a * 3
 3 / b
 a % 5
-~~~~
+```
 
 associativity: left
 
 == addition, subtraction
 
-~~~~
+```
 a + b
 a - b
-~~~~
+```
 
 associativity: left
 
 == less than, greater than
 
-~~~~
+```
 a < b
 a > b
-~~~~
+```
 
 associativity: none
 
 == equals
 
-~~~~
+```
 a = 3
-~~~~
+```
 
 associativity: right
 
 == not
 
-~~~~
+```
 not a
-~~~~
+```
 
 == and
 
-~~~~
+```
 a and b
-~~~~
+```
 
 associativity: left
 
 == or
 
-~~~~
+```
 a or b
-~~~~
+```
 
 associativity: left
 
@@ -195,3 +195,5 @@ TODO: examples
 >   where
 >     firstChar = letter <|> char '_'
 >     nonFirstChar = digit <|> firstChar
+
+stuff

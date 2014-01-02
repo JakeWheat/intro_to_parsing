@@ -1,13 +1,16 @@
 
-In this tutorial, we will cover parsing the from clause in SQL, which
-is quite complex on its own.
+In this tutorial, we extend the from clause support to the following:
+we will support implicit and explicit joins, including keywords
+natural, inner, outer, left, right, full, cross, on and using, plus
+parens and simple aliases (e.g. select a from t u, but not select a
+from t(a,b)). We don't support oracle outer join syntax (+) or the
+other 'pre-ANSI' variations on this theme. No lateral keyword or apply
+or pivot.
 
 TODO: redo this all from scratch.
 
 > {-# LANGUAGE TupleSections #-}
-
-TODO: qualify or add explicit imports
-
+>
 > --import Text.Groom (groom)
 > --import qualified Text.Parsec as P
 > import Text.Parsec.String (Parser)
@@ -24,7 +27,7 @@ TODO: qualify or add explicit imports
 > import QueryExpressions hiding (from)
 
 
-~~~~
+```
 data TableRef = SimpleTableRef String
               | JoinTableRef JoinType TableRef TableRef (Maybe JoinCondition)
               | JoinParens TableRef
@@ -39,11 +42,11 @@ data JoinCondition = JoinOn ValueExpr
                    | JoinUsing [String]
                    | JoinNatural
                 deriving (Eq,Show)
-~~~~
+```
 
 rough grammar
 
-~~~~
+```
 tref
 (cross | [natural]
          ([inner]
@@ -53,7 +56,7 @@ tref
          )
 join tref
 [on expr | using (...)]
-~~~~
+```
 
 
 Here are the examples:
@@ -108,44 +111,47 @@ because of all the keywords.
 TODO: try and simplify this code some more.
 
 > from :: Parser [TableRef]
-> from = option [] (try (keyword_ "from") *> commaSep1 tref)
+> from = try (keyword_ "from") *> commaSep1 tref
 >   where
->     tref = choice [try (JoinQueryExpr <$> parens queryExpr)
->                   ,JoinParens <$> parens tref
->                   ,SimpleTableRef <$> identifierString]
->            >>= optionSuffix join
->            >>= optionSuffix alias
->     join tref0 =
->         choice
->         [try (keyword_ "natural") *> keyword_ "inner"
->          *> conditionlessSuffix tref0 Inner (Just JoinNatural)
->         ,try (keyword_ "join")
->          *> (JoinTableRef Inner tref0 <$> tref <*> joinExpr)
->         ,try (keyword_ "inner")
->          *> conditionSuffix tref0 Inner
->         ,try (choice [JLeft <$ keyword_ "left"
->                      ,JRight <$ keyword_ "right"
->                      ,Full <$ keyword_ "full"])
->          >>= outerJoinSuffix tref0
->         ,try (keyword_ "cross")
->          *> conditionlessSuffix tref0 Cross Nothing
->         ]
->         >>= optionSuffix join
->     outerJoinSuffix tref0 jt =
->         optional (keyword_ "outer") *> conditionSuffix tref0 jt
->     conditionSuffix tref0 jt =
->         keyword_ "join" *> (JoinTableRef jt tref0 <$> tref <*> joinExpr)
->     conditionlessSuffix tref0 jt jc =
->         keyword_ "join" *> (JoinTableRef jt tref0 <$> tref <*> return jc)
->     joinExpr = choice
->                [(Just . JoinUsing)
->                  <$> (try (keyword_ "using")
->                       *> parens (commaSep1 identifierString))
->                ,(Just . JoinOn) <$> (try (keyword_ "on") *> valueExpr)
->                ,return Nothing
+>     tref = nonJoinTref >>= optionSuffix joinTrefSuffix
+>     nonJoinTref = choice [try (TRQueryExpr <$> parens queryExpr)
+>                          ,TRParens <$> parens tref
+>                          ,TRLateral <$> (try (keyword_ "lateral")
+>                                          *> nonJoinTref)
+>                          ,try (TRFunction <$> name
+>                                           <*> parens (commaSep valueExpr))
+>                          ,TRSimple <$> name]
+>                   >>= optionSuffix aliasSuffix
+>     aliasSuffix j = option j (TRAlias j <$> alias)
+>     joinTrefSuffix t = (do
+>          nat <- option False $ try (True <$ try (keyword_ "natural"))
+>          TRJoin t <$> joinType
+>                   <*> nonJoinTref
+>                   <*> optionMaybe (joinCondition nat))
+>         >>= optionSuffix joinTrefSuffix
+>     joinType =
+>         choice [choice
+>                 [JCross <$ try (keyword_ "cross")
+>                 ,JInner <$ try (keyword_ "inner")
+>                 ,choice [JLeft <$ try (keyword_ "left")
+>                         ,JRight <$ try (keyword_ "right")
+>                         ,JFull <$ try (keyword_ "full")]
+>                  <* optional (try $ keyword_ "outer")]
+>                 <* keyword "join"
+>                ,JInner <$ keyword_ "join"]
+>     joinCondition nat =
+>         choice [guard nat >> return JoinNatural
+>                ,try (keyword_ "on") >>
+>                 JoinOn <$> valueExpr
+>                ,try (keyword_ "using") >>
+>                 JoinUsing <$> parens (commaSep1 name)
 >                ]
->     alias j = let a1 = optional (try (keyword_ "as")) *> identifierString
->               in option j (JoinAlias j <$> try a1)
+
+> alias :: Parser Alias
+> alias = Alias <$> try tableAlias <*> try columnAliases
+>   where
+>     tableAlias = optional (try $ keyword_ "as") *> name
+>     columnAliases = optionMaybe $ try $ parens $ commaSep1 name
 
 Here is another small helper parser. Having the arguments in this
 order makes it easy to chain using >>=.

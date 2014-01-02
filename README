@@ -3,20 +3,40 @@ limit SQL query parser.
 
 TOC:
 
-ParsingIntroduction.lhs
+GettingStarted.lhs
 
-introduces basic parsing with Parsec with lots of examples
+very basic introduction to parsing with Parsec
+
+FirstRealParsing.lhs
+
+Creating a very simple expression language parser.
+
+ApplicativeStyle.lhs
+
+Rewriting the simple expression parsing in a more succinct style
+
+CombinatorReview.lhs
+
+Review of functions from Text.Parsec.Combinator, Control.Applicative
+and Control.Monad
+
+Boilerplate
+
+the utility functions used in the previous tutorials, plus some notes
+on types in Parsec
 
 ParsecExtras.lhs
 
 covers three higher level modules which come with Parsec,
 Text.Parsec.Expr for expression parsing, Text.Parsec.Perm for
-permutaion parsing, and Text.Parsec.Token for creating token parsers
-easily.
+permutation parsing, and Text.Parsec.Token for creating token parsers
+easily. TODO: split into three?
 
 ValueExpressions.lhs
 
-This covers building a parser a subset of value expressions from SQL.
+This covers building a parser a subset of value expressions from SQL,
+which are an extension of the expression types and parsers already
+covered.
 
 QueryExpressions.lhs
 
@@ -32,21 +52,72 @@ Additional documents not yet started:
 
 pretty printing
 
+This will cover writing a pretty printer for SQL using the
+Text.PrettyPrint.HughesPJ, and trying to make the output readable with
+a nice layout even for complex SQL queries.
+
 writing tests
+
+Here we will take the ad hoc tests and build an organised test suite
 
 error messages
 
+In this document, we will explore error messages with parsec and how
+restructuring parser code can lead to better or worse error messages.
+
+writing a command line sql interface
+
+quick experiment to try to implement the front end for a multiline sql
+command line using fake incremental parsing which parsec doesn't
+support directly.
+
 refactored project + cabal package
+
+In this tutorial, we will take the sql parser, pretty printer and
+tests, and create a complete cabal package.
+
+parsec internals
+
+In this tutorial, we will try to understand a bit more about the
+implementation of Parsec.
+
+ANSI SQL grammar
+
+In this really interesting document, we will go through the entire
+SQL:2003 grammar, skipping the bits which aren't relevant to queries,
+and try to understand and give examples of all the different
+bits. This will be used as a guide to complete the parser so that it
+can parse all SQL:2003 queries.
 
 extending value expressions to cover more features
 
+In this tutorial(s), we will cover adding all the missing bits in
+value expressions from the ANSI SQL:2003 standard.
+
 extending query expressions to cover more features
 
-adding:
+In this tutorial(s), we will extend the parser to cover all the other
+missing features from SQL:2003.
+
 position annotation
+
+In this tutorial, we will add position annotation to the parsing, so
+that a later stage could, e.g., provide type error messages with the
+correct line and column numbers.
+
 dialects
+
+In this tutorial, we will discuss how we can support other SQL dialects
+
 separate lexer
+
+In this tutorial, we will look at creating a proper separate lexer to
+see how it is done, and remark on what the tradeoffs seem to be.
+
 quasiquotes
+
+In this tutorial, we will create quasiquoters for sql query
+expressions and value expressions, and see how powerful this can be
 
 Extras:
 

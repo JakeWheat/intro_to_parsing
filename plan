@@ -3,9 +3,8 @@ TODO:
 replace ~~~~ with ``` which seems to be more standard and works on
 fpcomplete site as well as with pandoc
 
-make request for fpcomplete tutorials to support > for lhs files
-instead of for blockquotes. Otherwise, will have to write a filter
-which wraps > sections with ```haskell before pasting into fpcomplete.
+prepare for fpcomplete site:
+cat SimpleExpressionsAndCombinators.lhs | sed "s/^===/\###/"| sed "s/^==/\##/" | sed "s/^=/\#/" | runhaskell FixSchool.lhs |xclip
 
 investigate how embedded code can be made runnable within the tutorial
 on fpcomplete
@@ -15,14 +14,8 @@ add ` for embedded code
 review and remove explicit explanations where feasible, replace with
 more examples
 
-break up parsing introduction into several docs, it's huge
-1. IntroductionToParsing + Text.Parsec.Char review
-2. SimpleExpressionParser
-3. Text.Parsec.Combinators + Control.Applicative review
-4. Helper functions module + notes
-
-maybe have a sequence of docs for expression parsing, in the middle
-will be the simple sql value expression parser
+reproduce code in different tutorials to reduce the amount of
+interdependencies, especially for small functions.
 
 maybe split parsecextras file into three also?
 
@@ -122,7 +115,14 @@ dialect support + testing
 separate lexer (investigate simplicity of code, accurate
   parse/modify/pretty print, speed, error messages)
 
+maybe some benchmarking: parsing from different sources (memory, disk,
+string, strict text, lazy text), compare lex no lex + attoparsec. Look
+at the lib for attoparsec and parsec together (one for speed and the
+other to retry to get good error messages).
+
 quasi quotes
+
+syntax highlighting, generating documentation + links
 
 ---------
 

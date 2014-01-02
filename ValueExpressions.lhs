@@ -6,13 +6,13 @@ to the simple expressions used in the last tutorial.
 
 > {-# LANGUAGE TupleSections #-}
 > module ValueExpressions where
-
+>
 > import Text.Groom (groom)
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Char (oneOf, digit, string, anyChar, char, letter, alphaNum)
 > import Text.Parsec.String.Combinator (many1, manyTill, eof, choice, between, sepBy, optionMaybe)
 > import Text.Parsec.String.Parsec(try,parse)
-
+>
 > import Control.Applicative (many, (<*),(<$>), (*>), (<|>),(<$),(<*>))
 > import Control.Monad (void,guard)
 > --import Debug.Trace
@@ -29,11 +29,11 @@ It will just support integral and string literals at this time. Proper
 SQL supports more literal types including some quite weird syntax
 which we will skip for now.
 
-~~~~
+```
 1
 500
 'string literal'
-~~~~
+```
 
 == identifiers
 
@@ -42,12 +42,12 @@ or underscore, and contain letters, underscores and numbers. Full SQL
 identifiers are more complicated to support so we will skip this for
 now also.
 
-~~~~
+```
 a
 something
 _test_
 a123
-~~~~
+```
 
 == 'dotted identifiers'
 
@@ -57,10 +57,10 @@ various names used to describe these since it is a bit confusing,
 especially in SQL. Both parts must parse according to the identifier
 rules above.
 
-~~~~
+```
 t.a
 something.something_else
-~~~~
+```
 
 == star
 
@@ -68,10 +68,10 @@ We will support the star as special expression which can be used at
 the top level of select lists (and a few other places in SQL). We will
 also support a 'dotted star'.
 
-~~~~
+```
 *
 t.*
-~~~~
+```
 
 == function application
 
@@ -79,11 +79,11 @@ This represents a function application which syntactically looks like
 the normal function application used in languages like C. The function
 name must parse as a valid identifier according to the rules above.
 
-~~~~
+```
 f()
 g(1)
 h(2,'something')
-~~~~
+```
 
 == operators
 
@@ -92,7 +92,7 @@ single prefix unary operator (not). We will attempt to support correct
 precedence and associativity for these. Here is a complete list of all
 the supported operators.
 
-~~~~
+```
 a = b
 a > b
 a < b
@@ -110,7 +110,7 @@ a or b
 'some' || 'thing'
 a like b
 not a
-~~~~
+```
 
 == case expression
 
@@ -118,23 +118,23 @@ There are two standard variations of case expressions in SQL. One is
 more like a switch statement in C (but is an expression, not a
 statement):
 
-~~~~
+```
 case a
 when 3 then 'got three'
 when 5 then 'got five'
 else 'neither'
 end
-~~~~
+```
 
 The other has a boolean expression in each branch:
 
-~~~~
+```
 case
 when a = 3 then 'a is three'
 when b = 4 then 'b is four'
 else 'neither'
 end
-~~~~
+```
 
 The else branch is optional.
 
@@ -143,9 +143,9 @@ The else branch is optional.
 It will parse and represent parentheses explicitly in the abstract
 syntax.
 
-~~~~
+```
 (1 + 2) * 3
-~~~~
+```
 
 Here is a syntax type to represent value expressions.
 
@@ -256,9 +256,9 @@ the test data and the parser as parameters so we can reuse it later.
 
 You can use
 
-~~~~
+```
 checkParse literal parseLiteralsTestData
-~~~~
+```
 
 at the ghci prompt to check the literal examples with the literal
 parser.
@@ -267,13 +267,13 @@ I like to change the tests briefly every so often to break one of
 them, then run the tests to check that the failure is detected (then
 change it back of course):
 
-~~~~
+```
 *SqlParser> checkParse literal parseLiteralsTestData
 parsing 'test' failed, expected
 Literal "test1"
 got
 Right (Literal "test")
-~~~~
+```
 
 This is a quick sanity check to make sure the tests will actually
 report failure.

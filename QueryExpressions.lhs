@@ -5,9 +5,7 @@ refers to these things as 'query expressions' to distinguish then from
 
 > {-# LANGUAGE TupleSections #-}
 > module QueryExpressions where
-
-TODO: qualify or add explicit imports
-
+>
 > --import Text.Groom (groom)
 > --import qualified Text.Parsec as P
 > import Text.Parsec.String (Parser)
@@ -55,8 +53,10 @@ Here are the tableref types:
 
 The subset of SQL we will support is this:
 
-queries only, no explicit table 'table t', no table value constructor
-'values (1,2)', no union, intersect or except.
+TODO: write lots of examples here
+
+select queries only, no union, intersect or except. No common table
+expressions.
 
 we will support all the value expressions that the value expression
 parser above supports
@@ -80,14 +80,7 @@ we will support having
 we support order by, with multiple columns, but not explicit asc or
 desc , and no 'nulls first' or 'nulls last' syntax.
 
-For the from clause, we will support implicit and explicit joins,
-including keywords natural, inner, outer, left, right, full, cross, on
-and using, plus parens and simple aliases (e.g. select a from t u, but
-not select a from t(a,b)). We don't support oracle outer join syntax
-(+) or the other 'pre-ANSI' variations on this theme. No lateral
-keyword or apply or pivot. All of this will be in the next
-tutorial. In this tutorial, we only support optional 'from
-table_name'.
+for the from clause, we will only support optional 'from table_name'.
 
 No support for offset and fetch first, or variations.
 

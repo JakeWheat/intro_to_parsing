@@ -1,5 +1,6 @@
-WIP, a tutorial which demonstrates the basics of Parsec and then builds a
-limit SQL query parser.
+WIP, a tutorial which demonstrates the basics of Parsec, builds a
+limited SQL query parser, before continuing to build a full featured
+SQL:2003 query parser.
 
 TOC:
 

@@ -6,38 +6,48 @@ TOC:
 
 GettingStarted.lhs
 
-very basic introduction to parsing with Parsec
+Introduction to parsing with Parsec, including a review of
+Text.Parsec.Char functions.
 
-FirstRealParsing.lhs
+VerySimpleExpressions.lhs
 
-Creating a very simple expression language parser.
+Creating a very simple expression language parser, and introducing
+some functions from Text.Parsec.Combinator.
 
 ApplicativeStyle.lhs
 
-Rewriting the simple expression parsing in a more succinct style
+Rewriting the simple expression parser code in a more succinct style.
 
 CombinatorReview.lhs
 
-Review of functions from Text.Parsec.Combinator, Control.Applicative
-and Control.Monad
+Review and examples of all functions from Text.Parsec.Combinator, and
+some from Control.Applicative and Control.Monad.
 
-Boilerplate
+FunctionsAndTypesForParsing.lhs
 
-the utility functions used in the previous tutorials, plus some notes
-on types in Parsec
+The utility functions used in the previous tutorials, plus some notes
+on types in Parsec.
 
-ParsecExtras.lhs
+TextParsecExpr.lhs
 
-covers three higher level modules which come with Parsec,
-Text.Parsec.Expr for expression parsing, Text.Parsec.Perm for
-permutation parsing, and Text.Parsec.Token for creating token parsers
-easily. TODO: split into three?
+This covers using the Text.Parsec.Expr for expression parsing with
+prefix, postfix and infix operators with fixity.
+
+TextParsecPerm.lhs
+
+This covers the Text.Parsec.Perm module which is used for parsing
+different things in flexible order.
+
+TextParsecToken.lhs
+
+This covers Text.Parsec.Token which can be used to create token
+parsers easily.
 
 ValueExpressions.lhs
 
 This covers building a parser a subset of value expressions from SQL,
-which are an extension of the expression types and parsers already
-covered.
+which are an extension of the simple expression types and parsers
+covered in previous tutorials.
 
 QueryExpressions.lhs
 
@@ -48,6 +58,12 @@ FromClause.lhs
 
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
+
+SimpleSQLQueryParser.lhs
+
+Here is the code from ValueExpressions, QueryExpressions and
+FromClause plus tests put together and rearranged as a coherent
+standalone module with plenty of comments.
 
 Additional documents not yet started:
 
@@ -60,11 +76,18 @@ a nice layout even for complex SQL queries.
 writing tests
 
 Here we will take the ad hoc tests and build an organised test suite
+with a wrapper for hunit, wrapper for test.framework wrapper and maybe
+tasty
 
 error messages
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
+
+refactored project + cabal package
+
+In this tutorial, we will take the sql parser, pretty printer and
+tests, and create a complete cabal package.
 
 writing a command line sql interface
 
@@ -72,15 +95,11 @@ quick experiment to try to implement the front end for a multiline sql
 command line using fake incremental parsing which parsec doesn't
 support directly.
 
-refactored project + cabal package
-
-In this tutorial, we will take the sql parser, pretty printer and
-tests, and create a complete cabal package.
-
 parsec internals
 
 In this tutorial, we will try to understand a bit more about the
-implementation of Parsec.
+implementation of Parsec. We will start by implementing a simple
+parser combinator library from scratch.
 
 ANSI SQL grammar
 
@@ -94,11 +113,36 @@ extending value expressions to cover more features
 
 In this tutorial(s), we will cover adding all the missing bits in
 value expressions from the ANSI SQL:2003 standard.
+some ideas:
+left factor expression parser
+number literals
+typed literal
+subqueries
+full dotted
+quoted identifiers/ names
+more operators + trickiness with between
+splitting the operator ast ctor
+aggregate calls
+window functions
+other value expression things
 
 extending query expressions to cover more features
 
 In this tutorial(s), we will extend the parser to cover all the other
 missing features from SQL:2003.
+some ideas:
+select distinct and select all
+union, except, intersect
+offset, fetch
+explicit table, table value constructor
+cte
+full table alias
+* as (a,b,c)
+dotted identifiers in table names, etc.
+lateral
+tableref function
+group by extensions
+order by asc, desc, nulls first/last
 
 position annotation
 
@@ -119,6 +163,16 @@ quasiquotes
 
 In this tutorial, we will create quasiquoters for sql query
 expressions and value expressions, and see how powerful this can be
+
+speed and optimisation
+
+maybe some benchmarking: parsing from different sources (memory, disk,
+string, strict text, lazy text), compare lex no lex + attoparsec. Look
+at the lib for attoparsec and parsec together (one for speed and the
+other to retry to get good error messages).
+
+something about syntax highlighting, generating documentation + links
+
 
 Extras:
 

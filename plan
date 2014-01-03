@@ -1,7 +1,17 @@
 TODO:
 
-replace ~~~~ with ``` which seems to be more standard and works on
-fpcomplete site as well as with pandoc
+rewrite the value expressions and query expressions using the new
+style and building on the previous code
+
+do the from clause tutorial
+
+create the final simple sql query parser module
+
+go back and finish off all the little todos (and not so little todos).
+
+release tutorial at this point
+
+
 
 prepare for fpcomplete site:
 cat SimpleExpressionsAndCombinators.lhs | sed "s/^===/\###/"| sed "s/^==/\##/" | sed "s/^=/\#/" | runhaskell FixSchool.lhs |xclip
@@ -9,120 +19,13 @@ cat SimpleExpressionsAndCombinators.lhs | sed "s/^===/\###/"| sed "s/^==/\##/" |
 investigate how embedded code can be made runnable within the tutorial
 on fpcomplete
 
-add ` for embedded code
-
 review and remove explicit explanations where feasible, replace with
-more examples
+more examples. Can a tutorial be written with only examples and
+nothing else? Bam!
 
-reproduce code in different tutorials to reduce the amount of
-interdependencies, especially for small functions.
 
-maybe split parsecextras file into three also?
-
-value expressions: start with the basic one in the first tutorial then
-have the one in the Expr tutorial then extend this with the simplified
-sql parser set of operators then create a new parser with each new
-ctor one at a time. This way can also do the naive thing first, then
-talk about how to deal with the problems that come up.
-
-documents which need finishing off:
-
-ParsingIntroduction:
-lots of examples to write
-simple expressions: tests, pretty printer quickcheck
-
-ParsecExtras:
-have to write more on expressions
-do the perm and token sections
-
-ValueExpressions:
-
-needs a lot more work, add more discussion of overlap issues,
-etc.
-
-QueryExpression:
-
-tidy up and review, there should be some changes in style + discussion
-of this
-
-FromClause:
-
-this needs starting again from scratch, build up with lots of
-discussion. It might be useful to add more syntax to demonstrate more
-issues and techniques
-
-pretty printing:
-create a nice pretty printer using the text.pretty lib
-
-writing tests:
-tests should already litter the previous code. This document will maybe cover a hunit wrapper, test.framework wrapper, maybe tasty?
-
-error messages:
-
-explore what error messages it produces and look at how the parsers
-can be rearranged for better error messages
-
-more on parsec internals? Maybe implementing a simple parser
-combinator library, then understand the implementation of parsec and
-choices
-
-refactored project:
-
-create a new branch in simple-sql-parser, document how the files are
-created, laid out and the cabal and extra stuff created. Maybe talk
-about the website also. links to stuff about creating packages
-
-annotated run through of the ANSI SQL grammar
-
-extending value expressions
-
-extend these to add all the bits from ansi sql 2003 (+cherry pick
-later bits?) in stages with discussion of issues.
-TODO: write list of features and issues
-partial list:
-left factor expression parser
-number literals
-typed literal
-subqueries
-full dotted
-quoted identifiers/ names
-more operators + trickiness with between
-splitting the operator ast ctor
-aggregate calls
-window functions
-other value expression things
-
-extending query expressions
-TODO: write list of features and issues
-partial list:
-select distinct and select all
-union, except, intersect
-offset, fetch
-explicit table, table value constructor
-cte
-full table alias
-* as (a,b,c)
-dotted identifiers in table names, etc.
-lateral
-tableref function
-group by extensions
-order by asc, desc, nulls first/last
-
-position annotation
-
-dialect support + testing
-
-separate lexer (investigate simplicity of code, accurate
-  parse/modify/pretty print, speed, error messages)
-
-maybe some benchmarking: parsing from different sources (memory, disk,
-string, strict text, lazy text), compare lex no lex + attoparsec. Look
-at the lib for attoparsec and parsec together (one for speed and the
-other to retry to get good error messages).
-
-quasi quotes
-
-syntax highlighting, generating documentation + links
+docs todo to continue after the simple sql parser module is done,
+listed in README
 
 ---------
 
@@ -132,7 +35,8 @@ keep working on simple-sql-parser in parallel to add the complete set
 of features for the ansi sql support
 
 then create steps to get to this point from this tutorial parser, so
-the original simple-sql-parser code will be completely discarded.
+the current simple-sql-parser code will be completely discarded at
+some point.
 
 start working on extended package which can replace hssqlppp:
 typechecking + ddl, procedural, etc. Should use uuagc?

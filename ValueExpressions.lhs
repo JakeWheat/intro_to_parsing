@@ -1,8 +1,8 @@
 
 In this tutorial, we will build a parser for a subset of SQL value
 expressions. These are roughly the same as the expressions used in
-languages like Haskell or C. This will be something like an extension
-to the simple expressions used in the last tutorial.
+languages like Haskell or C. This will follow on from the work on
+expressions in previous tutorials.
 
 > {-# LANGUAGE TupleSections #-}
 > module ValueExpressions where
@@ -20,16 +20,40 @@ to the simple expressions used in the last tutorial.
 > import qualified Text.Parsec.String.Expr as E
 
 Our value expressions will support literals, identifiers, asterisk,
-some simple operators, case expression and parentheses. Here is the
-lineup in more detail.
+some simple operators, case expression and parentheses.
 
-== Literals
+The phrase 'value expression' is from the ANSI SQL standards. What we
+will develop here isn't exactly ANSI SQL value expressions, and we
+won't use them exactly how the standards do, but the differences
+really aren't important right now. I will come back to this in a later
+tutorial.
+
+Here is the lineup in more detail.
+
+= Spec
+
+== comments
+
+We will start supporting comments. It will support the two standard
+comment syntaxes from the standard:
+
+```sql
+-- single line comment
+/*
+multiline
+comment
+*/
+```
+
+The `/* */` comments do not nest.
+
+== literals
 
 It will just support integral and string literals at this time. Proper
 SQL supports more literal types including some quite weird syntax
 which we will skip for now.
 
-```
+```sql
 1
 500
 'string literal'
@@ -42,7 +66,7 @@ or underscore, and contain letters, underscores and numbers. Full SQL
 identifiers are more complicated to support so we will skip this for
 now also.
 
-```
+```sql
 a
 something
 _test_
@@ -54,10 +78,10 @@ a123
 We will do some limited support for identifiers with two parts
 separated by a dot. I don't want to get into the exact meaning or the
 various names used to describe these since it is a bit confusing,
-especially in SQL. Both parts must parse according to the identifier
-rules above.
+especially in SQL. We can just stick to the syntax. Both parts must
+parse according to the identifier rules above.
 
-```
+```sql
 t.a
 something.something_else
 ```
@@ -68,18 +92,18 @@ We will support the star as special expression which can be used at
 the top level of select lists (and a few other places in SQL). We will
 also support a 'dotted star'.
 
-```
+```sql
 *
 t.*
 ```
 
 == function application
 
-This represents a function application which syntactically looks like
-the normal function application used in languages like C. The function
-name must parse as a valid identifier according to the rules above.
+This represents any syntax which looks like the normal function
+application used in languages like C. The function name must parse as
+a valid identifier according to the rules above.
 
-```
+```sql
 f()
 g(1)
 h(2,'something')
@@ -88,11 +112,12 @@ h(2,'something')
 == operators
 
 We will only support a small range of binary operators for now plus a
-single prefix unary operator (not). We will attempt to support correct
-precedence and associativity for these. Here is a complete list of all
-the supported operators.
+single prefix unary operator (`not`). We will attempt to support
+correct precedence and associativity for these via the
+Text.Parsec.Expr module. Here is a complete list of all the supported
+operators.
 
-```
+```sql
 a = b
 a > b
 a < b
@@ -118,7 +143,7 @@ There are two standard variations of case expressions in SQL. One is
 more like a switch statement in C (but is an expression, not a
 statement):
 
-```
+```sql
 case a
 when 3 then 'got three'
 when 5 then 'got five'
@@ -128,7 +153,7 @@ end
 
 The other has a boolean expression in each branch:
 
-```
+```sql
 case
 when a = 3 then 'a is three'
 when b = 4 then 'b is four'
@@ -136,18 +161,20 @@ else 'neither'
 end
 ```
 
-The else branch is optional.
+The else branch is optional (if it is missing, it implicitly means
+'else null').
 
 == parentheses
 
 It will parse and represent parentheses explicitly in the abstract
-syntax.
+syntax, like we did with the previous expression parsers.
 
-```
+```sql
 (1 + 2) * 3
 ```
+= abstract syntax for value expressions
 
-Here is a syntax type to represent value expressions.
+Here is a type to represent value expressions:
 
 > data ValueExpr = StringLiteral String
 >                | NumberLiteral Integer
@@ -164,18 +191,17 @@ Here is a syntax type to represent value expressions.
 >                | Parens ValueExpr
 >                  deriving (Eq,Show)
 
-Here is the explanation, some examples, test cases, and some simple
-parsers for each of these variants.
+Let's get stuck into the parsers.
 
-== comments
+= whitespace and comments
 
-Here is the whitespace parser which skips comments also
+Here is the whitespace parser which skips comments also:
 
-> whiteSpace :: Parser ()
-> whiteSpace =
->     choice [simpleWhiteSpace *> whiteSpace
->            ,lineComment *> whiteSpace
->            ,blockComment *> whiteSpace
+> whitespace :: Parser ()
+> whitespace =
+>     choice [simpleWhitespace *> whitespace
+>            ,lineComment *> whitespace
+>            ,blockComment *> whitespace
 >            ,return ()]
 >   where
 >     lineComment = try (string "--")
@@ -185,11 +211,14 @@ Here is the whitespace parser which skips comments also
 >                    -- TODO: why is try used here
 >                    *> manyTill anyChar (try $ string "*/")
 >     -- use many1 so we can more easily avoid non terminating loops
->     simpleWhiteSpace = void $ many1 (oneOf " \t\n")
+>     simpleWhitespace = void $ many1 (oneOf " \t\n")
 
 TODO: lots more explanation
 
-== Literal
+> lexeme :: Parser a -> Parser a
+> lexeme p = p <* whitespace
+
+= literals
 
 Here are some examples so we can build up a test suite as we go.
 
@@ -205,21 +234,23 @@ It doesn't support non integral number literals.
 We already saw how to write these parsers:
 
 > integer :: Parser Integer
-> integer = read <$> many1 digit <* whiteSpace
+> integer = read <$> lexeme (many1 digit)
 
-> integerLiteral :: Parser ValueExpr
-> integerLiteral = NumberLiteral <$> integer
+> numberLiteral :: Parser ValueExpr
+> numberLiteral = NumberLiteral <$> integer
 
 String literals:
 
 > stringLiteral :: Parser ValueExpr
-> stringLiteral = StringLiteral <$> (symbol_ "'" *> manyTill anyChar (symbol_ "'"))
+> stringLiteral =
+>     StringLiteral <$> (symbol_ "'" *> manyTill anyChar (symbol_ "'"))
 
-Here is the symbol parser. I've created a wrapper which uses void
-which can be used to avoid writing void in lots of places.
+Here is the symbol parser. I've created two versions, one which
+returns the symbol, and one which returns `()` which can be used to
+avoid writing void in lots of places.
 
 > symbol :: String -> Parser String
-> symbol s = string s <* whiteSpace
+> symbol s = lexeme (string s)
 
 > symbol_ :: String -> Parser ()
 > symbol_ s = void $ symbol s
@@ -229,7 +260,7 @@ TODO: suffix issues with symbol parser
 Here is the parser which can parse either kind of literal:
 
 > literal :: Parser ValueExpr
-> literal = integerLiteral <|> stringLiteral
+> literal = numberLiteral <|> stringLiteral
 
 Here is a small helper function to check the examples above. I've put
 the test data and the parser as parameters so we can reuse it later.
@@ -237,7 +268,7 @@ the test data and the parser as parameters so we can reuse it later.
 > checkParse :: (Eq a, Show a) => Parser a -> [(String,a)] -> IO ()
 > checkParse parser testData = do
 >     let -- create a wrapper function which uses the parser function
->         parseit = parse (whiteSpace *> parser <* eof) ""
+>         parseit = parse (whitespace *> parser <* eof) ""
 >         -- parse all the input strings
 >         parsed = map (parseit . fst) testData
 >         triples = zip testData parsed
@@ -254,14 +285,8 @@ the test data and the parser as parameters so we can reuse it later.
 >                                       ++ "\ngot\n" ++ groom got
 >     putStrLn $ intercalate "\n" $ map report failed
 
-You can use
-
-```
-checkParse literal parseLiteralsTestData
-```
-
-at the ghci prompt to check the literal examples with the literal
-parser.
+You can use `checkParse literal parseLiteralsTestData` at the ghci
+prompt to check the literal examples with the literal parser.
 
 I like to change the tests briefly every so often to break one of
 them, then run the tests to check that the failure is detected (then
@@ -278,7 +303,7 @@ Right (Literal "test")
 This is a quick sanity check to make sure the tests will actually
 report failure.
 
-== identifier
+= identifier
 
 Some examples:
 
@@ -288,28 +313,21 @@ Some examples:
 >     ,("a", Identifier "a")
 >     ,("a_1", Identifier "a_1")]
 
+We've already seen these:
 
-Here a parser for the identifier token
-
-> identifierString' :: Parser String
-> identifierString' =
->     (:) <$> letterOrUnderscore
->         <*> many letterDigitOrUnderscore <* whiteSpace
+> identifierString :: Parser String
+> identifierString = lexeme ((:) <$> firstChar <*> many nonFirstChar)
 >   where
->     letterOrUnderscore = letter <|> char '_'
->     letterDigitOrUnderscore = digit <|> letterOrUnderscore
+>     firstChar = letter <|> char '_'
+>     nonFirstChar = digit <|> firstChar
 
-and a parser for identifier expressions
+> identifier :: Parser ValueExpr
+> identifier = Identifier <$> identifierString
 
-> identifier' :: Parser ValueExpr
-> identifier' = Identifier <$> identifierString
+We can check these parsers at the ghci prompt using `checkParse
+identifier parseIdentifierTestData`.
 
-We can check these parsers at the ghci prompt using 'checkParse
-identifier' parseIdentifierTestData'.
-
-There will be an issue with this parser which will be covered later.
-
-== dotted identifier
+= dotted identifier
 
 > parseDottedIdentifierTestData :: [(String,ValueExpr)]
 > parseDottedIdentifierTestData =
@@ -319,7 +337,7 @@ There will be an issue with this parser which will be covered later.
 > dottedIdentifier = DIdentifier <$> identifierString
 >                                <*> (symbol_ "." *> identifierString)
 
-== stars
+= stars
 
 > parseStarTestData :: [(String,ValueExpr)]
 > parseStarTestData =
@@ -330,7 +348,7 @@ There will be an issue with this parser which will be covered later.
 > star = choice [Star <$ symbol_ "*"
 >               ,DStar <$> (identifierString <* symbol_ "." <* symbol_ "*")]
 
-== app
+= app
 
 The App constructor is used for syntax which looks like regular
 function application: f(), f(a), f(a,b), etc.
@@ -340,12 +358,13 @@ function application: f(), f(a), f(a,b), etc.
 >                    ,("f(1)", App "f" [NumberLiteral 1])
 >                    ,("f(1,a)", App "f" [NumberLiteral 1, Identifier "a"])]
 
-The valueExpr parser will appear later.
+Here it is:
 
 > app :: Parser ValueExpr
 > app = App <$> identifierString <*> parens (commaSep valueExpr)
 
-There are two new helper parsers:
+Here are the new helper parsers. We've already seen the `parens`
+parser (called `betweenParens` earlier).
 
 > parens :: Parser a -> Parser a
 > parens = between (symbol_ "(") (symbol_ ")")
@@ -353,7 +372,7 @@ There are two new helper parsers:
 > commaSep :: Parser a -> Parser [a]
 > commaSep = (`sepBy` symbol_ ",")
 
-== case
+= case
 
 Here are the examples/tests for case.
 
@@ -387,28 +406,25 @@ Here is the parser:
 >     swhen = keyword_ "when" *>
 >             ((,) <$> valueExpr <*> (keyword_ "then" *> valueExpr))
 
-I've added a new helper parser 'keyword'. This parser suffers from the
-same issue as the symbol parser regarding valid suffix characters. It
-suffers from more issues since e.g. keyword 'select' will parse this
-string 'selectx', which is even more wrong.
+I've added a new helper parser 'keyword'.
 
 > keyword :: String -> Parser String
-> keyword s = string s <* whiteSpace
+> keyword s = string s <* whitespace
 
 > keyword_ :: String -> Parser ()
 > keyword_ s = keyword s *> return ()
 
 In fact, it's the same as the symbol parser. We can use this for now
-just to document the code, and if we fix the keyword and symbol
-parsers later to be more exact then we won't need to change the code
-which uses them.
+just to document the code, and if we change the keyword and symbol
+parsers later so that they aren't the same, then we won't need to
+change the code which uses them.
 
 TODO: put in the identifier with blacklist here: the when issue.
 
-> identifierString :: Parser String
-> identifierString = do
+> identifierString' :: Parser String
+> identifierString' = do
 >     s <- (:) <$> letterOrUnderscore
->              <*> many letterDigitOrUnderscore <* whiteSpace
+>              <*> many letterDigitOrUnderscore <* whitespace
 >     guard (s `notElem` blacklist)
 >     return s
 >   where
@@ -421,8 +437,8 @@ TODO: put in the identifier with blacklist here: the when issue.
 TODO: talk about what must be in the blacklist, and what doesn't need
 to be. This should be later.
 
-> identifier :: Parser ValueExpr
-> identifier = Identifier <$> identifierString
+> identifier' :: Parser ValueExpr
+> identifier' = Identifier <$> identifierString
 
 TODO: follow up on try, error messages.
 
@@ -455,19 +471,18 @@ http://www.postgresql.org/docs/9.3/static/sql-syntax-lexical.html#SQL-PRECEDENCE
 >         ,[binary "or" E.AssocLeft]
 >         ]
 >   where
->     binary name assoc = E.Infix (void (opName name)
->                                  >> return (\a b -> BinaryOp a name b))
->                                 assoc
->     prefix name = E.Prefix (void (opName name)
->                             >> return (PrefixOp name))
+>     binary name assoc =
+>         E.Infix (mkBinOp name <$ symbol name) assoc
+>     mkBinOp nm a b = BinaryOp a nm b
+>     prefix name = E.Prefix (PrefixOp name <$ symbol name)
 
 TODO: talk about a parser which is just string: put this in the
 expression parser tutorial?
 
->     opName s = try $ do
+>     {-opName s = try $ do
 >         x <- many1 (alphaNum <|> oneOf "*/+-><=!|")
 >         guard (x == s)
->         whiteSpace
+>         whitespace-}
 
 
 

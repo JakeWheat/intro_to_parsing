@@ -33,20 +33,28 @@ Here are the imports.
 
 The first parser:
 
-> oneChar :: Parser Char
-> oneChar = anyChar
+```
+anyChar :: Parser Char
+```
 
-This tutorial is going to start very slowly.
+This parser is in the module Text.Parsec.Char. There is a wrapper in
+this tutorial's project, Text.Parsec.String.Char, which gives this
+function a simplified type.
 
 Whenever we write a parser which parses to a value of type a, we give
 it the return type of `Parser a`. In this case, we parse a character
-so the return type is `Parser Char`. The `Parser` type is in the
-module Text.Parsec.String. We will cover this in more detail later.
+so the return type is `Parser Char`. The `Parser` type itself is in
+the module Text.Parsec.String. We will cover this in more detail
+later.
 
 Let's use this parser. Change to the directory where you saved this
 .lhs file, and run ghci. Then type in ':l GettingStarted.lhs'. You
 can run the parser using a wrapper, enter the following at the ghci
-prompt: 'regularParse oneChar "a"'.
+prompt: 'regularParse anyChar "a"'.
+
+```
+regularParse :: Parser a -> String -> Either ParseError a
+```
 
 Here is a transcript:
 
@@ -59,36 +67,36 @@ Loading package base ... linking ... done.
 Prelude> :l GettingStarted.lhs
 [1 of 1] Compiling Main             ( GettingStarted.lhs, interpreted )
 Ok, modules loaded: Main.
-*Main> regularParse oneChar "a"
+*Main> regularParse anyChar "a"
 Right 'a'
 ```
 
 Here are some examples of running this parser on various input:
 
 ```
-*Main> regularParse oneChar "a"
+*Main> regularParse anyChar "a"
 Right 'a'
 
-*Main> regularParse oneChar "b"
+*Main> regularParse anyChar "b"
 Right 'b'
 
-*Main> regularParse oneChar "0"
+*Main> regularParse anyChar "0"
 Right '0'
 
-*Main> regularParse oneChar " "
+*Main> regularParse anyChar " "
 Right ' '
 
-*Main> regularParse oneChar "\n"
+*Main> regularParse anyChar "\n"
 Right '\n'
 
-*Main> regularParse oneChar "aa"
+*Main> regularParse anyChar "aa"
 Right 'a'
 
-*Main> regularParse oneChar ""
+*Main> regularParse anyChar ""
 Left (line 1, column 1):
 unexpected end of input
 
-*Main> regularParse oneChar " a"
+*Main> regularParse anyChar " a"
 Right ' '
 ```
 
@@ -102,39 +110,52 @@ Here are two alternatives to regularParse you can also use for
 experimenting for the time being:
 
 ```
-*Main> regularParse oneChar "a"
+parseWithEof :: Parser a -> String -> Either ParseError a
+```
+
+```
+parseWithLeftOver :: Parser a -> String -> Either ParseError (a,String)
+```
+
+These can be useful when you are not sure if your parser is consuming
+all your input string or not. The eof parser can tell you the answer
+to this, and the leftover parser can additionally tell you what was
+left over.
+
+```
+*Main> regularParse anyChar "a"
 Right 'a'
 
-*Main> parseWithEof oneChar "a"
+*Main> parseWithEof anyChar "a"
 Right 'a'
 
-*Main> parseWithLeftOver oneChar "a"
+*Main> parseWithLeftOver anyChar "a"
 Right ('a',"")
 
-*Main> *Main> regularParse oneChar ""
+*Main> *Main> regularParse anyChar ""
 Left (line 1, column 1):
 unexpected end of input
 
-*Main> parseWithEof oneChar ""
+*Main> parseWithEof anyChar ""
 Left (line 1, column 1):
 unexpected end of input
 
-*Main> parseWithLeftOver oneChar ""
+*Main> parseWithLeftOver anyChar ""
 Left (line 1, column 1):
 unexpected end of input
 
-*Main> regularParse oneChar "aa"
+*Main> regularParse anyChar "aa"
 Right 'a'
 
-*Main> parseWithEof oneChar "aa"
+*Main> parseWithEof anyChar "aa"
 Left (line 1, column 2):
 unexpected 'a'
 expecting end of input
 
-*Main> parseWithLeftOver oneChar "aa"
+*Main> parseWithLeftOver anyChar "aa"
 Right ('a',"a")
 
-*Main> parseWithLeftOver oneChar "abc"
+*Main> parseWithLeftOver anyChar "abc"
 Right ('a',"bc")
 
 ```
@@ -175,15 +196,17 @@ Let's go through some of the functions in Text.Parsec.Char module from
 the Parsec package. The haddock is avaialble here:
 <http://hackage.haskell.org/package/parsec-3.1.3/docs/Text-Parsec-Char.html>.
 
+Here is the `satisfy` function, with its full type signature.
+
 ```
 satisfy :: Stream s m Char => (Char -> Bool) -> ParsecT s u m Char
 ```
 
-This is the main primitive function in Parsec. This looks at the next
-character from the current input, and if the function (Char -> Bool)
-returns true for this character, it 'pops' it from the input and
-returns it. In this way, the current position in the input string is
-tracked behind the scenes.
+This is one of the main primitive functions in Parsec. This looks at
+the next character from the current input, and if the function (Char
+-> Bool) returns true for this character, it 'pops' it from the input
+and returns it. In this way, the current position in the input string
+is tracked behind the scenes.
 
 In the simplified type wrappers, the satisfy function's type is this:
 
@@ -234,7 +257,7 @@ You can see in the source that the satisfy function is a little more
 primitive than the other functions. I'm going to skip the explanation
 for the implementation of satisfy for now.
 
-Here is the parser we used above in the oneChar parser:
+Here is the parser we used above in the anyChar parser:
 
 ```
 anyChar :: Parser Char
@@ -252,7 +275,15 @@ The char parses a specific character which you supply:
 char :: Char -> Parser Char
 ```
 
-TODO: examples
+```
+*Main> regularParse (char 'a') "a"
+Right 'a'
+
+*Main> regularParse (char 'a') "b"
+Left (line 1, column 1):
+unexpected "b"
+expecting "a"
+```
 
 These parsers all parse single hardcoded characters
 
@@ -289,9 +320,12 @@ noneOf :: [Char] -> Parser Char
 
 These are just simple wrappers of satisfy using elem.
 
-Exercise: try all these parsers out in GHCI, e.g.:
+
+You should try all these parsers out in GHCI, e.g.:
 
 ```
+
+regularParse space " "
 
 regularParse upper "A"
 
@@ -323,12 +357,9 @@ unexpected "t"
 expecting "one"
 ```
 
-TODO?: implement string directly in terms of satisfy, and quickcheck
-it
-
-
-here is another slight extension, which uses a combinator (skipMany)
-if you look at the source. We will cover this combinator shortly.
+Here is the `spaces` parser, which, if you look at the source, you can
+see uses a combinator (skipMany). We will cover this combinator
+shortly.
 
 ```
 spaces :: Parser ()

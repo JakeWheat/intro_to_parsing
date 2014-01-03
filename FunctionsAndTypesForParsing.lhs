@@ -1,4 +1,3 @@
-todo: better name for this file
 
 In this file is the source and explanation for the parsing functions
 which we've been using, and some notes about the wrappers and full
@@ -51,9 +50,6 @@ input which wasn't parsed.
 TODO: what happens when you use 'many anyToken <* eof' variations
 instead? Maybe should talk about greediness? Or talk about it in a
 better place in the tutorial.
-
-Here is the main testing function used, which includes ignoring prefix
-whitespace.
 
 > parseWithWSEof :: Parser a -> String -> Either ParseError a
 > parseWithWSEof p = parseWithEof (whiteSpace *> p)

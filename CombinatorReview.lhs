@@ -13,7 +13,7 @@ and Control.Monad as well.
 > import Control.Applicative ((<$>), (<*>), (<$), (<*), (*>), (<|>), many)
 > import Control.Monad (void, ap, mzero)
 > import Data.Char (isLetter, isDigit)
-> import Boilerplate
+> import FunctionsAndTypesForParsing
 
 = Text.Parsec.Combinator
 

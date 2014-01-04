@@ -2,9 +2,7 @@
 Text.Parsec.Expr allows building expression parsers with a range of
 operators with different precedences and associativities easily.
 
-Text.Parsec.Expr can be great to quickly get a prototype parser up and
-running, but sometimes the lack of control means you have to replace
-it with something more flexible later on.
+Text.Parsec.Expr can be great to quickly get a parser up and running.
 
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Combinator (many1, between)
@@ -14,11 +12,7 @@ it with something more flexible later on.
 > import Control.Monad (void)
 >
 > import qualified Text.Parsec.String.Expr as E
-> import Boilerplate
-
-The functionality will be enough for the simple SQL query parser later
-in the tutorial, but for a more complete SQL parser it will fall short
-(especially when parsing some non-standard dialects).
+> import FunctionsAndTypesForParsing
 
 Let's extend the SimpleExpression type and parsers to cover a range of
 operators with different precedences and associativity.
@@ -229,13 +223,11 @@ Here is the term parser.
 TODO: write lots of parsing examples, including parse failures with
 ambiguity.
 
-issue: double prefix op.
-
-issues: notx, <= / <
+issue: double prefix op, link to bug on parsec bug tracker.
 
 The source in Text.Parsec.Expr is not too big. You can have a look and
 try to understand it. There are several standard approaches in parsing
 theory to parse expressions with data driven precendences and
 associativity. I don't know which one Text.Parsec.Expr uses, but if
-you find these and read about them, the implementation might be a bit
-more understandable.
+you find these and read about them, then the source of
+Text.Parsec.Expr might be a bit more understandable.

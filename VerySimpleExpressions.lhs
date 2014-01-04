@@ -11,7 +11,7 @@ with Parsec.
 > import Control.Applicative ((<|>), many)
 > import Control.Monad (void)
 > import Data.Char (isLetter, isDigit)
-> import Boilerplate
+> import FunctionsAndTypesForParsing
 
 = num
 

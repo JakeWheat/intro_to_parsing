@@ -3,6 +3,10 @@ TODO:
 rewrite the value expressions and query expressions using the new
 style and building on the previous code
 
+write the token tutorial, and see if will use this module in the
+parser. I think there are too many problems, but should try to
+understand the source for some ideas to steal.
+
 do the from clause tutorial
 
 create the final simple sql query parser module

@@ -14,7 +14,7 @@ own variations to experiment with if you are unsure about anything.
 > import Control.Applicative ((<$>), (<*>), (<*), (*>), (<|>), many, (<$))
 > import Control.Monad (void, ap)
 > import Data.Char (isLetter, isDigit)
-> import Boilerplate
+> import FunctionsAndTypesForParsing
 
 Here is the SimpleExpr type again:
 

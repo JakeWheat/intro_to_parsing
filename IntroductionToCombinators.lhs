@@ -12,7 +12,7 @@ with Parsec.
 > import Control.Applicative ((<$>), (<*>), (<$), (<*), (*>), (<|>), many)
 > import Control.Monad (void, ap)
 > import Data.Char (isLetter, isDigit)
-> import Boilerplate
+> import FunctionsAndTypesForParsing
 
 Let's create a very simple expression language:
 

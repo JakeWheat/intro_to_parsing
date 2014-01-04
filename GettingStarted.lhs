@@ -26,7 +26,7 @@ Here are the imports.
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Char (anyChar)
 > import Text.Parsec.String.Char
-> import Boilerplate (regularParse, parseWithEof, parseWithLeftOver)
+> import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOver)
 > import Data.Char
 
 = Getting started

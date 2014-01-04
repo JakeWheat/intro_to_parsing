@@ -3,7 +3,7 @@ In this file is the source and explanation for the parsing functions
 which we've been using, and some notes about the wrappers and full
 types in Parsec.
 
-> module Boilerplate where
+> module FunctionsAndTypesForParsing where
 >
 > import Text.Parsec (ParseError)
 > import Text.Parsec.String (Parser)
@@ -14,7 +14,7 @@ types in Parsec.
 > import Control.Monad (void)
 
 
-= Boilerplate
+= Functions for parsing
 
 Here are the testing functions which were used earlier:
 

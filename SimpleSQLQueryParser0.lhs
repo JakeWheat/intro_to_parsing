@@ -8,7 +8,7 @@ expressions so far as a self contained module
 > import Text.Parsec.String.Parsec (try)
 > import Text.Parsec.String.Char
 > import Text.Parsec.String.Combinator
-> import Text.Parsec (parse)
+> import Text.Parsec (parse,ParseError)
 > import Control.Applicative ((<$>),(<*), (*>),(<*>), (<$), (<|>), many)
 > import qualified Text.Parsec.String.Expr as E
 > import Control.Monad
@@ -486,6 +486,15 @@ No support for offset and fetch first, or variations.
 > suffixWrapper :: (a -> Parser a) -> a -> Parser a
 > suffixWrapper p a = p a <|> return a
 
+= the parser api
+
+> parseQueryExpr :: String -> Either ParseError QueryExpr
+> parseQueryExpr = parse (whitespace *> queryExpr <* eof) ""
+
+> parseValueExpr :: String -> Either ParseError ValueExpr
+> parseValueExpr = parse (whitespace *> valueExpr [] <* eof) ""
+
+
 = tests
 
 > data TestItem = Group String [TestItem]
@@ -704,6 +713,8 @@ No support for offset and fetch first, or variations.
 
 > allQueryExprTests :: [(String,QueryExpr)]
 > allQueryExprTests = concat [selectListTests ++ fromTests ++ whereTests ++ groupByTests ++ havingTests ++ orderByTests ++ queryExprJoinTests]
+
+todo: use external api parsing code
 
 > makeTest :: (Eq a, Show a) => Parser a -> (String,a) -> H.Test
 > makeTest parser (src,expected) = H.TestLabel src $ H.TestCase $ do

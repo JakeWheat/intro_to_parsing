@@ -70,40 +70,43 @@ Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
 standalone module.
 
-Additional documents not yet started: *** - part of first milestone
+PrettyPrinting0.lhs
 
-*** pretty printing
+This quick module covers a simple pretty printer for our SQL ast.
 
-This will cover writing a pretty printer for SQL using the
-Text.PrettyPrint.HughesPJ, and trying to make the output readable with
-a nice layout even for complex SQL queries.
+Additional documents not yet started:
 
-*** supporting tpch
+supporting tpch
 
 we will use the tpch queries as examples to help improve the pretty
 printer. First there are a few extra bits of syntax to support so that
 they parse
 
-*** pretty printing part 2
+pretty printing part 2
 
 some tweaks to the pretty printer to improve the layout for the tpch
 queries
 
-*** writing tests
+writing tests
 
 Here we will take the ad hoc tests and build an organised test suite
 with a wrapper for hunit, wrapper for test.framework wrapper and maybe
 tasty
 
-*** error messages
+error messages
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
 
-*** refactored project + cabal package
+refactored project + cabal package
 
 In this tutorial, we will take the sql parser, pretty printer and
 tests, and create a complete cabal package.
+
+TODO: talk about robustness and the casual way the parser has been put
+together and the casual way issues have been tackled.
+
+The following might go in a separate project/ tutorial
 
 writing a command line sql interface
 

@@ -16,7 +16,6 @@ or pivot.
 > import Text.Parsec.String.Combinator
 > import Control.Applicative ((<$>),(<*), (*>),(<*>), (<$), (<|>))
 > import Control.Monad
-> --import Data.List (intercalate)
 > import Data.Maybe ()
 > import qualified Test.HUnit as H
 > import FunctionsAndTypesForParsing
@@ -43,7 +42,7 @@ syntax types.
 >       ,qeHaving :: Maybe ValueExpr
 >       ,qeOrderBy :: [ValueExpr]
 >       } deriving (Eq,Show)
-
+>
 > makeSelect :: QueryExpr
 > makeSelect = Select {qeSelectList = []
 >                     ,qeFrom = []
@@ -51,7 +50,7 @@ syntax types.
 >                     ,qeGroupBy = []
 >                     ,qeHaving = Nothing
 >                     ,qeOrderBy = []}
-
+>
 > data TableRef = TRSimple String
 >               | TRJoin TableRef JoinType TableRef (Maybe JoinCondition)
 >               | TRParens TableRef
@@ -67,7 +66,7 @@ this situation, and maybe not.
 
 > data JoinType = JoinInner | JoinLeft | JoinRight | JoinFull | JoinCross
 >                 deriving (Eq,Show)
-
+>
 > data JoinCondition = JoinOn ValueExpr
 >                    | JoinUsing [String]
 >                    | JoinNatural
@@ -94,7 +93,7 @@ separated tablerefs, aka an implicit join.
 
 > multipleTRSimpleTests :: [(String, [TableRef])]
 > multipleTRSimpleTests = [("from a,b", [TRSimple "a", TRSimple "b"])]
-
+>
 > from0 :: Parser [TableRef]
 > from0 = keyword_ "from" *> commaSep1 (TRSimple <$> identifier)
 
@@ -127,7 +126,7 @@ Here is the query expression parser we can use:
 >                    <*> option [] groupByClause
 >                    <*> optionMaybe having
 >                    <*> option [] orderBy
-
+>
 > from1 :: Parser [TableRef]
 > from1 =
 >     keyword_ "from" *> commaSep1 trefTerm
@@ -489,34 +488,46 @@ Let's create the full query expression parser now:
 > queryExprJoinTests =
 >     [("select a from t"
 >      ,ms [TRSimple "t"])
+>
 >     ,("select a from t,u"
 >      ,ms [TRSimple "t", TRSimple "u"])
+>
 >     ,("select a from t inner join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t left join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinLeft (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t right join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinRight (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t full join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinFull (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t cross join u"
 >      ,ms [TRJoin (TRSimple "t") JoinCross (TRSimple "u") Nothing])
+>
 >     ,("select a from t natural inner join u"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just JoinNatural)])
+>
 >     ,("select a from t inner join u using(a,b)"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just $ JoinUsing ["a", "b"])])
+>
 >     ,("select a from (select a from t)"
 >      ,ms [TRQueryExpr $ ms [TRSimple "t"]])
+>
 >     ,("select a from t as u"
 >      ,ms [TRAlias (TRSimple "t") "u"])
+>
 >     ,("select a from t u"
 >      ,ms [TRAlias (TRSimple "t") "u"])
+>
 >     ,("select a from (t cross join u) as u"
 >      ,ms [TRAlias (TRParens $ TRJoin (TRSimple "t") JoinCross
 >                                      (TRSimple "u") Nothing) "u"])
@@ -550,6 +561,7 @@ QueryExpr type.
 >     [("select a as a, b as b"
 >      ,makeSelect {qeSelectList = [(Iden "a", Just "a")
 >                                  ,(Iden "b", Just "b")]})
+>
 >     ,("select a a, b b"
 >      ,makeSelect {qeSelectList = [(Iden "a", Just "a")
 >                                  ,(Iden "b", Just "b")]})
@@ -578,6 +590,7 @@ QueryExpr type.
 >                  ,qeFrom = [TRSimple "t"]
 >                  ,qeGroupBy = [Iden "a"]
 >                  })
+>
 >     ,("select a,b,sum(c) from t group by a,b"
 >      ,makeSelect {qeSelectList = [(Iden "a",Nothing)
 >                                  ,(Iden "b",Nothing)
@@ -602,6 +615,7 @@ QueryExpr type.
 > orderByTests =
 >     [("select a from t order by a"
 >      ,ms [Iden "a"])
+>
 >     ,("select a from t order by a, b"
 >      ,ms [Iden "a", Iden "b"])
 >     ]

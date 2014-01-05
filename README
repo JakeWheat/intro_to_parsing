@@ -33,6 +33,11 @@ TextParsecExpr.lhs
 This covers using the Text.Parsec.Expr for expression parsing with
 prefix, postfix and infix operators with fixity.
 
+AnIssueWithTokenParsers.lhs
+
+Looks at an issue we have with the way the symbol parser in the
+Text.Parsec.Expr tutorial was used, and some possible fixes.
+
 TextParsecPerm.lhs
 
 This covers the Text.Parsec.Perm module which is used for parsing
@@ -59,32 +64,43 @@ FromClause.lhs
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
 
-SimpleSQLQueryParser.lhs
+SimpleSQLQueryParser0.lhs
 
 Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
-standalone module with plenty of comments.
+standalone module.
 
-Additional documents not yet started:
+Additional documents not yet started: *** - part of first milestone
 
-pretty printing
+*** pretty printing
 
 This will cover writing a pretty printer for SQL using the
 Text.PrettyPrint.HughesPJ, and trying to make the output readable with
 a nice layout even for complex SQL queries.
 
-writing tests
+*** supporting tpch
+
+we will use the tpch queries as examples to help improve the pretty
+printer. First there are a few extra bits of syntax to support so that
+they parse
+
+*** pretty printing part 2
+
+some tweaks to the pretty printer to improve the layout for the tpch
+queries
+
+*** writing tests
 
 Here we will take the ad hoc tests and build an organised test suite
 with a wrapper for hunit, wrapper for test.framework wrapper and maybe
 tasty
 
-error messages
+*** error messages
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
 
-refactored project + cabal package
+*** refactored project + cabal package
 
 In this tutorial, we will take the sql parser, pretty printer and
 tests, and create a complete cabal package.
@@ -186,6 +202,7 @@ ParseFile.lhs
 an executable which contains the boilerplate to run a parsec parser on
 a file passed as an argument
 
+TODO: add the parsec wrapper modules with simplified types
 
 Contact: jakewheatmail@gmail.com
 

@@ -3,7 +3,7 @@ Here is the complete syntax, parser and tests for the value and query
 expressions so far as a self contained module
 
 > module SimpleSQLQueryParser0 where
-
+>
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Parsec (try)
 > import Text.Parsec.String.Char
@@ -20,12 +20,7 @@ expressions so far as a self contained module
 
 = Supported SQL
 
-== value expressions
-
 == comments
-
-We will start supporting comments. It will support the two standard
-comment syntaxes from the standard:
 
 ```sql
 -- single line comment
@@ -37,24 +32,23 @@ comment
 
 The `/* */` comments do not nest.
 
-== literals
+== value expressions
 
-It will just support positive integral and string literals at this
-time. Proper SQL supports more literal types including some quite
-weird syntax which we will skip for now.
+=== literals
+
+postive integral literals and string literals with single quote,
+without escaping of single quote within string (so there is no way to
+create a string literal with a single quote in it).
 
 ```sql
 1
 500
 'string literal'
 ```
+=== identifiers
 
-== identifiers
-
-We will use simple identifiers: an identifier may start with a letter
-or underscore, and contain letters, underscores and numbers. Full SQL
-identifiers are more complicated to support so we will skip this for
-now also.
+Unquoted identifiers only, an identifier may start with a letter or
+underscore, and contain letters, underscores and digits.
 
 ```sql
 a
@@ -63,35 +57,28 @@ _test_
 a123
 ```
 
-== 'dotted identifiers'
+=== dotted identifiers
 
-We will do some limited support for identifiers with two parts
-separated by a dot. I don't want to get into the exact meaning or the
-various names used to describe these since it is a bit confusing,
-especially in SQL. We can just stick to the syntax. Both parts must
-parse according to the identifier rules above.
+Supports two part dotted identifiers only. Both parts must parse
+according to the rules for regular identifiers.
 
 ```sql
 t.a
 something.something_else
 ```
 
-== star
+=== star
 
-We will support the star as special expression which can be used at
-the top level of select lists (and a few other places in SQL). We will
-also support a 'dotted star'.
+Star, plus dotted star using the identifier rules for the first part.
 
 ```sql
 *
 t.*
 ```
 
-== function application
+=== function application
 
-This represents any syntax which looks like the normal function
-application used in languages like C. The function name must parse as
-a valid identifier according to the rules above.
+The function name must parse as a valid identifier.
 
 ```sql
 f()
@@ -99,13 +86,9 @@ g(1)
 h(2,'something')
 ```
 
-== operators
+=== operators
 
-We will only support a small range of binary operators for now plus a
-single prefix unary operator (`not`). We will attempt to support
-correct precedence and associativity for these via the
-Text.Parsec.Expr module. Here is a complete list of all the supported
-operators.
+Here is the range of operators supported.
 
 ```sql
 a = b
@@ -114,8 +97,7 @@ a < b
 a >= b
 a <= b
 a != b
-a <> b (two spellings of the same thing, we will parse them as
-        separate operators though)
+a <> b
 a and b
 a or b
 1 + 2
@@ -127,11 +109,7 @@ a like b
 not a
 ```
 
-== case expression
-
-There are two standard variations of case expressions in SQL. One is
-more like a switch statement in C (but is an expression, not a
-statement):
+=== case expression
 
 ```sql
 case a
@@ -141,8 +119,6 @@ else 'neither'
 end
 ```
 
-The other has a boolean expression in each branch:
-
 ```sql
 case
 when a = 3 then 'a is three'
@@ -151,48 +127,49 @@ else 'neither'
 end
 ```
 
-The else branch is optional (if it is missing, it implicitly means
-'else null').
+The else branch is optional in both cases.
 
 === parentheses
-
-It will parse and represent parentheses explicitly in the abstract
-syntax, like we did with the previous expression parsers.
 
 ```sql
 (1 + 2) * 3
 ```
+
+Parentheses are explicit in the abstract syntax.
+
 == query expressions
+
+TODO: examples
+
 select queries only, no union, intersect or except. No common table
 expressions.
 
-we will support all the value expressions that the value expression
-parser above supports
+select list aliases, with the 'as' optional in the alias
 
-we will support select lists with optional aliases, with the 'as'
-optional in the alias
+'select * from t'
+'select t.* from t'
+but not the alias version 'select * as (a,b,c) from t'.
 
-we will support the * as in 'select * from t', and the variation
-'select t.* from t', but not the alias version select * as (a,b,c)
-from t.
+from clause
 
-we support two part dotted identifiers in value expressions, but no
-other sort (such as 3-part dotted value expression identifiers, or
-schema qualified table names).
+implicit and explicit joins, including keywords
+natural, inner, outer, left, right, full, cross, on and using, plus
+parens and simple aliases (e.g. select a from t u, but not select a
+from t(a,b)).
 
-we will support regular group by lists, but not the new group by
-options in SQL2003 (group by (), grouping sets, cube, rollup).
+where
 
-we will support having
+group by lists
+but not the new group by options in SQL2003 (group by (), grouping
+sets, cube, rollup).
 
-we support order by, with multiple columns, but not explicit asc or
+having
+
+order by, with multiple columns, but not explicit asc or
 desc , and no 'nulls first' or 'nulls last' syntax.
-
-for the from clause, we will only support optional 'from table_name'.
 
 No support for offset and fetch first, or variations.
 
-TODO: sort this out
 
 = Abstract syntax
 
@@ -245,6 +222,8 @@ TODO: sort this out
 >                    deriving (Eq,Show)
 
 = Value expression parsing
+
+== term components
 
 > num :: Parser ValueExpr
 > num = NumLit <$> integer
@@ -358,8 +337,6 @@ TODO: sort this out
 > orderBy = keyword_ "order" *> keyword_ "by"
 >           *> commaSep1 (valueExpr [])
 
-
-
 == from clause
 
 > from :: Parser [TableRef]
@@ -420,7 +397,6 @@ TODO: sort this out
 
 == queryExpr
 
-
 > queryExpr :: Parser QueryExpr
 > queryExpr = Select
 >             <$> selectList
@@ -429,7 +405,6 @@ TODO: sort this out
 >             <*> option [] groupByClause
 >             <*> optionMaybe having
 >             <*> option [] orderBy
-
 
 = tokens
 
@@ -682,32 +657,43 @@ TODO: sort this out
 >      ,ms [TRSimple "t"])
 >     ,("select a from t,u"
 >      ,ms [TRSimple "t", TRSimple "u"])
+>
 >     ,("select a from t inner join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t left join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinLeft (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t right join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinRight (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t full join u on expr"
 >      ,ms [TRJoin (TRSimple "t") JoinFull (TRSimple "u")
 >           (Just $ JoinOn $ Iden "expr")])
+>
 >     ,("select a from t cross join u"
 >      ,ms [TRJoin (TRSimple "t") JoinCross (TRSimple "u") Nothing])
+>
 >     ,("select a from t natural inner join u"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just JoinNatural)])
+>
 >     ,("select a from t inner join u using(a,b)"
 >      ,ms [TRJoin (TRSimple "t") JoinInner (TRSimple "u")
 >           (Just $ JoinUsing ["a", "b"])])
+>
 >     ,("select a from (select a from t)"
 >      ,ms [TRQueryExpr $ ms [TRSimple "t"]])
+>
 >     ,("select a from t as u"
 >      ,ms [TRAlias (TRSimple "t") "u"])
+>
 >     ,("select a from t u"
 >      ,ms [TRAlias (TRSimple "t") "u"])
+>
 >     ,("select a from (t cross join u) as u"
 >      ,ms [TRAlias (TRParens $ TRJoin (TRSimple "t") JoinCross
 >                                      (TRSimple "u") Nothing) "u"])
@@ -725,4 +711,4 @@ TODO: sort this out
 >     case gote of
 >       Left e -> H.assertFailure $ show e
 >       Right got -> H.assertEqual src expected got
-x
+

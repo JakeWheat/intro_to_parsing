@@ -22,7 +22,11 @@ from t.
 
 we support two part dotted identifiers in value expressions, but no
 other sort (such as 3-part dotted value expression identifiers, or
-schema qualified table names).
+schema qualified table names or function names).
+
+for the from clause, we will only support optional 'from table_name'.
+
+supports where
 
 we will support regular group by lists, but not the new group by
 options in SQL2003 (group by (), grouping sets, cube, rollup).
@@ -32,7 +36,6 @@ we will support having
 we support order by, with multiple columns, but not explicit asc or
 desc , and no 'nulls first' or 'nulls last' syntax.
 
-for the from clause, we will only support optional 'from table_name'.
 
 No support for offset and fetch first, or variations.
 
@@ -381,4 +384,4 @@ Cases: 13  Tried: 13  Errors: 0  Failures: 0
 Counts {cases = 13, tried = 13, errors = 0, failures = 0}
 ```
 
-TODO: talk about putting the maybes/default values iside from, where, etc??
+TODO: talk about putting the maybes/default values inside from, where, etc??

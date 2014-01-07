@@ -1,4 +1,3 @@
-
 module Text.Parsec.String.Char where
 
 {-
@@ -28,10 +27,10 @@ upper :: Parser Char
 upper = C.upper
 
 lower :: Parser Char
-lower = C.upper
+lower = C.lower
 
 alphaNum :: Parser Char
-alphaNum = C.upper
+alphaNum = C.alphaNum
 
 letter :: Parser Char
 letter = C.letter

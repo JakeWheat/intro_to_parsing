@@ -61,6 +61,12 @@ optimisation of the select lists, plus have some serious c++ code.
 
 c++ parser
 
+
+rewrite parser in uuparse and in polyparse to compare code +
+  performance + error messages
+maybe rewrite parser using demo hand written parser combinator lib to
+  compare the same
+
 --
 
 maybe this should come later in a document:

@@ -21,6 +21,46 @@ stage, then doing additional syntax-type checks on the ast after
 
 = how parsec combines errors or drops them into the void
 
+
+= Parsing tpch
+
+Let's try the parser out on the TPC-H queries.
+
+```
+```
+
+Summary of errors so far:
+q1: typed literal: type_name 'literal value'
+q2: scalar subquery
+q3: typed literal
+q4: typed literal
+q5: typed literal
+q6: typed literal
+q7: ??
+q8: extract??
+q9: extract ??
+q10: typed literal
+q11: scalar sub query
+q12: ??
+q13: not like??
+q14: decimal literal
+q15: cte
+q16: count distinct
+q17: decimal literal
+q18: in subquery
+q19: in literal list
+q20: in subquery
+q21: exists subquery
+q22: substring
+
+TODO: try to figure out each issue. Not very easy: the error messages
+are not very good.
+
+Do some ad hoc stuff to try to improve each error message? Keep
+simplifying expressions then try to understand specific principles.
+Then make some generalizations that can be made across the parser
+
+
 = value expressions in isolation
 
 We can start with the real error code now by considering the
@@ -41,7 +81,10 @@ blacklist errors
 
 = query expressions
 
-
+mispelling keywords at this level
+clauses in wrong order
+adding extra tokens or removing them at clause/value expression
+boundaries
 
 = summarizing?
 

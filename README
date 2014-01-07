@@ -74,13 +74,18 @@ PrettyPrinting0.lhs
 
 This quick module covers a simple pretty printer for our SQL ast.
 
+ErrorMessages.lhs
+
+In this document, we will explore error messages with parsec and how
+restructuring parser code can lead to better or worse error messages.
+
 Additional documents not yet started:
 
-supporting tpch
+Parsing tpch
 
 we will use the tpch queries as examples to help improve the pretty
-printer. First there are a few extra bits of syntax to support so that
-they parse
+printer. First there are a few extra bits of syntax to be able to
+parse these queries
 
 pretty printing part 2
 
@@ -92,11 +97,6 @@ writing tests
 Here we will take the ad hoc tests and build an organised test suite
 with a wrapper for hunit, wrapper for test.framework wrapper and maybe
 tasty
-
-error messages
-
-In this document, we will explore error messages with parsec and how
-restructuring parser code can lead to better or worse error messages.
 
 refactored project + cabal package
 

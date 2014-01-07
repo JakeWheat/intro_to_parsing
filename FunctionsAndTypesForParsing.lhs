@@ -134,4 +134,5 @@ is Identity.
 
 TODO: Here is some other information on Parsec and Haskell:
 links, tutorials on fp, section in rwh, lyah?, old parsec docs,
-parsec docs on hackage, other parser combinator libs (uu, trifecta?)
+parsec docs on hackage, other parser combinator libs (uu, polyparse,
+trifecta?)

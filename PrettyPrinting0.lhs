@@ -30,6 +30,11 @@ By using a pretty printer library, we can get human readable source
 very easily compared with trying to convert directly to strings
 ourselves.
 
+= api
+
+> prettyQueryExpr :: QueryExpr -> String
+> prettyQueryExpr = render . queryExpr
+
 = value expressions
 
 > valueExpr :: ValueExpr -> Doc

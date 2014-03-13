@@ -22,7 +22,8 @@ integral numbers:
 > numberExamples = [("1", 1)
 >                  ,("23", 23)]
 
-TODO: make examples with parsing failures for all of these?
+TODO: make examples with parsing failures for all of the example
+scripts below?
 
 To parse a number, we need to parse one or more digits, and then read
 the resulting string. We can use the combinator `many1` to help with
@@ -106,9 +107,9 @@ letter or underscore, and `nonFirstChar` which parses a digit, letter
 or underscore. This time, we use the `many` function instead of
 `many1`.
 
-Try it out in ghci. I think it is always a good idea when developing
-parsing code to try things which you expect to work, and also to try
-things which you expect to not work and make sure you get an error.
+Try it out in ghci. I like to try things which you expect to work, and
+also to try things which you expect to not work and make sure you get
+an error.
 
 = parens
 
@@ -168,8 +169,7 @@ FirstRealParsing.lhs:142:7: Warning:
 As you can see, another way to suppress the warning is to use
 `_ <- char '('`.
 
-One issue with this parser is that it doesn't handle whitespace very
-well:
+One issue with this parser is that it doesn't handle whitespace:
 
 ```
 *Main> regularParse parens "(1)"
@@ -227,12 +227,25 @@ Here is a parser which will skip zero or more whitespace characters.
 > whitespace :: Parser ()
 > whitespace = void $ many $ oneOf " \n\t"
 
-We can use this to make our parsers handle whitespace better. Note: it
-always succeeds.
+We can use this to make our parsers handle whitespace better.
 
-TODO: examples
+```
+*Main> regularParse whitespace " "
+Right ()
+*Main> regularParse whitespace "  "
+Right ()
+*Main> regularParse whitespace "\t"
+Right ()
+*Main> regularParse whitespace " \n "
+Right ()
+*Main> regularParse whitespace ""
+Right ()
+```
 
-Here is the parens parser rewritten with whitespace handling:
+Notice that it always succeeds.
+
+Here is the parens parser rewritten with a common approach to
+whitespace handling:
 
 > parensW :: Parser Parentheses
 > parensW = do
@@ -268,7 +281,8 @@ parser should also consume and ignore any trailing whitespace.
 This is a simple convention which with a bit of care allows skipping
 whitespace exactly once wherever it needs to be skipped. To complete
 the lexeme style, we should also always skip leading whitespace at the
-top level only.
+top level only. This feels more elegant than spamming all the parsing
+code with many calls to `whitespace`.
 
 > lexeme :: Parser a -> Parser a
 > lexeme p = do
@@ -330,8 +344,7 @@ expressions.
 >                 | Parens SimpleExpr
 >                   deriving (Eq,Show)
 
-It's a bit simple and almost useless at the moment, but we will expand
-on this a lot in later tutorials.
+It's so simple that it is almost useless at the moment.
 
 > simpleExprExamples :: [(String,SimpleExpr)]
 > simpleExprExamples =
@@ -362,12 +375,13 @@ lexeme call in the var parser:
 >     firstChar = satisfy (\a -> isLetter a || a == '_')
 >     nonFirstChar = satisfy (\a -> isDigit a || isLetter a || a == '_')
 
-Here is an alternative, with the call to lexeme in a different place.
+Here is an alternative, with the call to lexeme in a different place,
+but gives effectively the same function.
 
 > varE' :: Parser SimpleExpr
 > varE' = do
->     fc <- firstChar
->     rest <- lexeme $ many nonFirstChar
+>     fc <- lexeme $ firstChar
+>     rest <- many nonFirstChar
 >     return $ Var (fc:rest)
 >   where
 >     firstChar = satisfy (\a -> isLetter a || a == '_')
@@ -405,9 +419,9 @@ To combine these, we can use an operator called `(<|>)`:
 > numOrVar :: Parser SimpleExpr
 > numOrVar = numE <|> varE
 
-It tries the first parser, and it if fails (fails without consuming
-any input), it tries the second parser. More about the 'consuming
-input' concept later.
+It tries the first parser, and it if fails (without consuming any
+input), it tries the second parser. More about the 'consuming input'
+concept later.
 
 Here is another way to write the numOrVar parser:
 
@@ -415,7 +429,7 @@ Here is another way to write the numOrVar parser:
 > numOrVar' = choice [numE,varE]
 
 `choice` is just wrapper around `(<|>)`. You can choose which one to
-use based on which looks clearer in each particular case.
+use based on which is more readable in each particular case.
 
 ```
 *Main> parseWithWhitespace numOrVar "a"
@@ -523,9 +537,10 @@ first parser given to `(<|>)`.
 usually try to minimise its use or eliminate it completely. I found I
 often got into a complete mess when I used `try` too much when writing
 parsers for something a little tricky like SQL, and that although
-doing some left-factoring appeared at first to be tedious and make the
-code less readable, I think it actually made the code more readable
-and I was a bit more convinced that it was correct.
+doing some left-factoring appeared at first to be tedious and appeared
+to make the code less readable, I eventually decided that for me it
+made the code more readable since what was happening was more
+transparent.
 
 Now we are going to fix this parser to parse arbitrarily nested
 expressions. In a way, the method used will roughly mean we are left
@@ -553,14 +568,14 @@ Here is the naive implementation:
 > simpleExpr3 = try addE3 <|> numE <|> varE <|> parensE3
 
 If you run this parser, it will enter an infinite loop, since
-`simpleExpr3` and `addE3` will keep calling eachother recursively
+`simpleExpr3` and `addE3` will keep calling each other recursively
 without making any progress.
 
 ```
 *Main> parseWithWhitespace simpleExpr3 "a+b"
   C-c Interrupted.
 ```
-Let's try without add at all.
+Let's try without `add`.
 
 > parensE4 :: Parser SimpleExpr
 > parensE4 = do
@@ -728,7 +743,7 @@ chainl1 :: Parser a -> Parser (a -> a -> a) -> Parser a
 chainl1 term op = ...
 ```
 
-The type of the Add constructor in pseudo code is:
+The type of the Add constructor in pseudocode is:
 
 ```haskell
 Add :: SimpleExpr -> SimpleExpr -> SimpleExpr

@@ -75,12 +75,7 @@ this situation, and maybe not.
 With the join condition, we've done the opposite to TableRef - we've
 combined `natural` and `on`/`using`, since only one of these can be
 present, even though this departs a little from the concrete
-syntax. So this time, we've set up the syntax to disallow invalid
-combinations. I'm not sure it's worth worrying about being consistent
-or getting exactly the right choice in each of these situations. If
-you come across something that becomes too difficult/awkward/complex,
-and changing one of these decisions, then that is a good time to make
-the change.
+syntax.
 
 First we will develop the standalone from clause parser, then we will
 update the query expression syntax and parsing to incorporate our new

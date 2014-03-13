@@ -232,7 +232,30 @@ implemented the parsers for in previous tutorials: `NumLit`, `Iden`,
 >    ++ map (\o -> ("a " ++ o ++ " b", BinOp (Iden "a") o (Iden "b")))
 >           ["=",">","<", ">=", "<=", "!=", "<>"
 >           ,"and", "or", "+", "-", "*", "/", "||", "like"]
->
+
+```
+*ValueExpressions> import Data.List
+*ValueExpressions Data.List> putStrLn $ intercalate "\n" $ map show operatorTests
+("not a",PrefOp "not" (Iden "a"))
+("+ a",PrefOp "+" (Iden "a"))
+("- a",PrefOp "-" (Iden "a"))
+("a = b",BinOp (Iden "a") "=" (Iden "b"))
+("a > b",BinOp (Iden "a") ">" (Iden "b"))
+("a < b",BinOp (Iden "a") "<" (Iden "b"))
+("a >= b",BinOp (Iden "a") ">=" (Iden "b"))
+("a <= b",BinOp (Iden "a") "<=" (Iden "b"))
+("a != b",BinOp (Iden "a") "!=" (Iden "b"))
+("a <> b",BinOp (Iden "a") "<>" (Iden "b"))
+("a and b",BinOp (Iden "a") "and" (Iden "b"))
+("a or b",BinOp (Iden "a") "or" (Iden "b"))
+("a + b",BinOp (Iden "a") "+" (Iden "b"))
+("a - b",BinOp (Iden "a") "-" (Iden "b"))
+("a * b",BinOp (Iden "a") "*" (Iden "b"))
+("a / b",BinOp (Iden "a") "/" (Iden "b"))
+("a || b",BinOp (Iden "a") "||" (Iden "b"))
+("a like b",BinOp (Iden "a") "like" (Iden "b"))
+```
+
 > parensTests :: [(String,ValueExpr)]
 > parensTests = [("(1)", Parens (NumLit 1))]
 
@@ -548,7 +571,8 @@ function application: f(), f(a), f(a,b), etc.
 >            ,("f(1,a)", App "f" [NumLit 1, Iden "a"])]
 
 Here is the parser, parameterized like the `parensValue` parser for
-the same reason:
+the same reason, so we can reuse the code for different versions of
+the value expression parser:
 
 > app :: Parser ValueExpr -> Parser ValueExpr
 > app val = App <$> identifier <*> parens (commaSep val)
@@ -614,10 +638,10 @@ Here is a rough pseudo-code sketch:
 
 ```
 keyword "case"
-optional test expression
-many1 when clause
+optional test_expression
+many1 when_clause
 optional else clause
-keyword "end
+keyword "end"
 ```
 
 Here is the case parser based simply on this pseudo-code.

@@ -2,7 +2,8 @@
 Text.Parsec.Expr allows building expression parsers with a range of
 operators with different precedences and associativities easily.
 
-Text.Parsec.Expr can be great to quickly get a parser up and running.
+`Text.Parsec.Expr` can be great to quickly get a parser up and
+running.
 
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Combinator (many1, between)

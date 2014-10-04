@@ -1,104 +1,136 @@
+# Intro to Parsing with Parsec in Haskell
+
 WIP, a tutorial which demonstrates the basics of Parsec, builds a
 limited SQL query parser, before continuing to build a full featured
 SQL:2003 query parser.
 
-TOC:
+# Getting Started
 
-GettingStarted.lhs
+- `GettingStarted.lhs`
 
 Introduction to parsing with Parsec, including a review of
 Text.Parsec.Char functions.
 
-VerySimpleExpressions.lhs
+# Very simple expressions
+
+- `VerySimpleExpressions.lhs`
 
 Creating a very simple expression language parser, and introducing
 some functions from Text.Parsec.Combinator.
 
-ApplicativeStyle.lhs
+# Applicative style
+
+- `ApplicativeStyle.lhs`
 
 Rewriting the simple expression parser code in a more succinct style.
 
-CombinatorReview.lhs
+# Combinator review
+
+- `CombinatorReview.lhs`
 
 Review and examples of all functions from Text.Parsec.Combinator, and
 some from Control.Applicative and Control.Monad.
 
-FunctionsAndTypesForParsing.lhs
+# Functions and types for parsing
+
+- `FunctionsAndTypesForParsing.lhs`
 
 The utility functions used in the previous tutorials, plus some notes
 on types in Parsec.
 
-TextParsecExpr.lhs
+# Expression parsers
+
+- `TextParsecExpr.lhs`
 
 This covers using the Text.Parsec.Expr for expression parsing with
 prefix, postfix and infix operators with fixity.
 
-AnIssueWithTokenParsers.lhs
+# An issue with token parsers
+
+- `AnIssueWithTokenParsers.lhs`
 
 Looks at an issue we have with the way the symbol parser in the
 Text.Parsec.Expr tutorial was used, and some possible fixes.
 
-TextParsecPerm.lhs
+# Permutation parsers
+
+- `TextParsecPerm.lhs`
 
 This covers the Text.Parsec.Perm module which is used for parsing
 different things in flexible order.
 
-TextParsecToken.lhs
+# Token parsers
+
+- `TextParsecToken.lhs`
 
 This covers Text.Parsec.Token which can be used to create token
 parsers easily.
 
-ValueExpressions.lhs
+# Value expressions
+
+- `ValueExpressions.lhs`
 
 This covers building a parser a subset of value expressions from SQL,
 which are an extension of the simple expression types and parsers
 covered in previous tutorials.
 
-QueryExpressions.lhs
+# Query expressions
+
+- `QueryExpressions.lhs`
 
 This covers building a parser to parse query expressions with select
 lists, simple from, where, group by, having and order by.
 
-FromClause.lhs
+# From clause
+
+- `FromClause.lhs`
 
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
 
-SimpleSQLQueryParser0.lhs
+# Simple SQL query parser
+
+- `SimpleSQLQueryParser0.lhs`
 
 Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
 standalone module.
 
-PrettyPrinting0.lhs
+# Pretty printing
+
+- `PrettyPrinting0.lhs`
 
 This quick module covers a simple pretty printer for our SQL ast.
 
-ErrorMessages.lhs
+# Error messages
+
+- `ErrorMessages.lhs`
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
 
+# Later documents
+
 Additional documents not yet started:
 
-Parsing tpch
+## Parsing TPC-H queries
 
-we will use the tpch queries as examples to help improve the pretty
+We will use the tpch queries as examples to help improve the pretty
 printer. First there are a few extra bits of syntax to be able to
 parse these queries
 
-pretty printing part 2
+## Pretty printing part 2
 
 some tweaks to the pretty printer to improve the layout for the tpch
 queries
 
-writing tests
+## Writing tests
 
 Here we will take the ad hoc tests and build an organised test suite
 with a wrapper for hunit, wrapper for test.framework wrapper and maybe
 tasty
 
-refactored project + cabal package
+## Refactored project + cabal package
 
 In this tutorial, we will take the sql parser, pretty printer and
 tests, and create a complete cabal package.
@@ -106,21 +138,21 @@ tests, and create a complete cabal package.
 TODO: talk about robustness and the casual way the parser has been put
 together and the casual way issues have been tackled.
 
-The following might go in a separate project/ tutorial
+# The following might go in a separate project/ tutorial
 
-writing a command line sql interface
+## Writing a command line sql interface
 
 quick experiment to try to implement the front end for a multiline sql
 command line using fake incremental parsing which parsec doesn't
 support directly.
 
-parsec internals
+## Parsec internals
 
 In this tutorial, we will try to understand a bit more about the
 implementation of Parsec. We will start by implementing a simple
 parser combinator library from scratch.
 
-ANSI SQL grammar
+## ANSI SQL grammar
 
 In this really interesting document, we will go through the entire
 SQL:2003 grammar, skipping the bits which aren't relevant to queries,
@@ -128,7 +160,7 @@ and try to understand and give examples of all the different
 bits. This will be used as a guide to complete the parser so that it
 can parse all SQL:2003 queries.
 
-extending value expressions to cover more features
+## Extending value expressions to cover more features
 
 In this tutorial(s), we will cover adding all the missing bits in
 value expressions from the ANSI SQL:2003 standard.
@@ -145,7 +177,7 @@ aggregate calls
 window functions
 other value expression things
 
-extending query expressions to cover more features
+## Extending query expressions to cover more features
 
 In this tutorial(s), we will extend the parser to cover all the other
 missing features from SQL:2003.
@@ -163,49 +195,49 @@ tableref function
 group by extensions
 order by asc, desc, nulls first/last
 
-position annotation
+## Position annotation
 
 In this tutorial, we will add position annotation to the parsing, so
 that a later stage could, e.g., provide type error messages with the
 correct line and column numbers.
 
-dialects
+## Dialects
 
 In this tutorial, we will discuss how we can support other SQL dialects
 
-separate lexer
+## Separate lexer
 
 In this tutorial, we will look at creating a proper separate lexer to
 see how it is done, and remark on what the tradeoffs seem to be.
 
-quasiquotes
+## Quasiquotes
 
 In this tutorial, we will create quasiquoters for sql query
 expressions and value expressions, and see how powerful this can be
 
-speed and optimisation
+## Speed and optimisation
 
 maybe some benchmarking: parsing from different sources (memory, disk,
 string, strict text, lazy text), compare lex no lex + attoparsec. Look
 at the lib for attoparsec and parsec together (one for speed and the
 other to retry to get good error messages).
 
-something about syntax highlighting, generating documentation + links
+## Something about syntax highlighting, generating documentation + links
 
 
-Extras:
+# Extras
 
-ParseString.lhs
+- `ParseString.lhs`
 
 an executable which contains the boilerplate to run a parsec parser on
 a string passed as an argument
 
-ParseFile.lhs
+- `ParseFile.lhs`
 
 an executable which contains the boilerplate to run a parsec parser on
 a file passed as an argument
 
-TODO: add the parsec wrapper modules with simplified types
+# TODO: add the parsec wrapper modules with simplified types
 
 Contact: jakewheatmail@gmail.com
 

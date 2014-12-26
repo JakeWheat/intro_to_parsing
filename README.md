@@ -6,69 +6,70 @@ SQL:2003 query parser.
 
 # Getting Started
 
-- `GettingStarted.lhs`
+- [`GettingStarted.lhs`](./GettingStarted.lhs)
+
 
 Introduction to parsing with Parsec, including a review of
 Text.Parsec.Char functions.
 
 # Very simple expressions
 
-- `VerySimpleExpressions.lhs`
+- [`VerySimpleExpressions.lhs`](./VerySimpleExpressions.lhs)
 
 Creating a very simple expression language parser, and introducing
 some functions from Text.Parsec.Combinator.
 
 # Applicative style
 
-- `ApplicativeStyle.lhs`
+- [`ApplicativeStyle.lhs`](./ApplicativeStyle.lhs)
 
 Rewriting the simple expression parser code in a more succinct style.
 
 # Combinator review
 
-- `CombinatorReview.lhs`
+- [`CombinatorReview.lhs`](./CombinatorReview.lhs)
 
 Review and examples of all functions from Text.Parsec.Combinator, and
 some from Control.Applicative and Control.Monad.
 
 # Functions and types for parsing
 
-- `FunctionsAndTypesForParsing.lhs`
+- [`FunctionsAndTypesForParsing.lhs`](./FunctionsAndTypesForParsing.lhs)
 
 The utility functions used in the previous tutorials, plus some notes
 on types in Parsec.
 
 # Expression parsers
 
-- `TextParsecExpr.lhs`
+- [`TextParsecExpr.lhs`](./TextParsecExpr.lhs)
 
 This covers using the Text.Parsec.Expr for expression parsing with
 prefix, postfix and infix operators with fixity.
 
 # An issue with token parsers
 
-- `AnIssueWithTokenParsers.lhs`
+- [`AnIssueWithTokenParsers.lhs`](./AnIssueWithTokenParsers.lhs)
 
 Looks at an issue we have with the way the symbol parser in the
 Text.Parsec.Expr tutorial was used, and some possible fixes.
 
 # Permutation parsers
 
-- `TextParsecPerm.lhs`
+- [`TextParsecPerm.lhs`](./TextParsecPerm.lhs)
 
 This covers the Text.Parsec.Perm module which is used for parsing
 different things in flexible order.
 
 # Token parsers
 
-- `TextParsecToken.lhs`
+- [`TextParsecToken.lhs`](./TextParsecToken.lhs)
 
 This covers Text.Parsec.Token which can be used to create token
 parsers easily.
 
 # Value expressions
 
-- `ValueExpressions.lhs`
+- [`ValueExpressions.lhs`](./ValueExpressions.lhs)
 
 This covers building a parser a subset of value expressions from SQL,
 which are an extension of the simple expression types and parsers
@@ -76,21 +77,21 @@ covered in previous tutorials.
 
 # Query expressions
 
-- `QueryExpressions.lhs`
+- [`QueryExpressions.lhs`](./QueryExpressions.lhs)
 
 This covers building a parser to parse query expressions with select
 lists, simple from, where, group by, having and order by.
 
 # From clause
 
-- `FromClause.lhs`
+- [`FromClause.lhs`](./FromClause.lhs)
 
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
 
 # Simple SQL query parser
 
-- `SimpleSQLQueryParser0.lhs`
+- [`SimpleSQLQueryParser0.lhs`](./SimpleSQLQueryParser0.lhs)
 
 Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
@@ -98,13 +99,13 @@ standalone module.
 
 # Pretty printing
 
-- `PrettyPrinting0.lhs`
+- [`PrettyPrinting0.lhs`](./PrettyPrinting0.lhs)
 
 This quick module covers a simple pretty printer for our SQL ast.
 
 # Error messages
 
-- `ErrorMessages.lhs`
+- [`ErrorMessages.lhs`](./ErrorMessages.lhs)
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
@@ -227,12 +228,12 @@ other to retry to get good error messages).
 
 # Extras
 
-- `ParseString.lhs`
+- [`ParseString.lhs`](./ParseString.lhs)
 
 an executable which contains the boilerplate to run a parsec parser on
 a string passed as an argument
 
-- `ParseFile.lhs`
+- [`ParseFile.lhs`](./ParseFile.lhs)
 
 an executable which contains the boilerplate to run a parsec parser on
 a file passed as an argument

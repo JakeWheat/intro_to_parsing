@@ -380,8 +380,8 @@ but gives effectively the same function.
 
 > varE' :: Parser SimpleExpr
 > varE' = do
->     fc <- lexeme $ firstChar
->     rest <- many nonFirstChar
+>     fc <- firstChar
+>     rest <- lexeme $ many nonFirstChar
 >     return $ Var (fc:rest)
 >   where
 >     firstChar = satisfy (\a -> isLetter a || a == '_')

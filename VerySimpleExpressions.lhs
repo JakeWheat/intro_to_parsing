@@ -148,7 +148,7 @@ ghci prompt.
 
 ```
 *Main> :set -Wall
-*Main> :l "FirstRealParsing.lhs"
+*Main> :l "VerySimpleExpressions.lhs"
 
 ...
 

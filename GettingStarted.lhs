@@ -28,6 +28,7 @@ Here are the imports.
 > import Text.Parsec.String.Char
 > import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOver)
 > import Data.Char
+> import Text.Parsec.String.Combinator (many1)
 
 = Getting started
 

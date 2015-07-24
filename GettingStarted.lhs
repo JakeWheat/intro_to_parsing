@@ -28,6 +28,7 @@ Here are the imports.
 > import Text.Parsec.String.Char
 > import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOver)
 > import Data.Char
+> import Text.Parsec.String.Combinator (many1)
 
 = Getting started
 
@@ -193,7 +194,7 @@ Later on, we will look at the general types in more detail.
 = Text.Parsec.Char
 
 Let's go through some of the functions in `Text.Parsec.Char` module from
-the Parsec package. The haddock is avaialble here:
+the Parsec package. The haddock is available here:
 <http://hackage.haskell.org/package/parsec-3.1.3/docs/Text-Parsec-Char.html>.
 
 Here is the `satisfy` function, with its full type signature.

@@ -19,12 +19,17 @@ investigate how embedded code can be made runnable within the tutorial
 on fpcomplete
 
 review and remove explicit explanations where feasible, replace with
-more examples. Can a tutorial be written with only examples and
-nothing else? Bam!
-
+more examples.
 
 docs todo to continue after the simple sql parser module is done,
 listed in README
+
+some of the big tasks with big unknowns:
+new expression parser generator, maybe use in from clause also
+understanding error messages and shaping the parser
+sql standard support
+supporting dialects
+
 
 ---------
 

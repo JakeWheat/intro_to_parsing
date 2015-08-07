@@ -1,7 +1,7 @@
 
 In this file is the source and explanation for the parsing functions
-which we've been using, and some notes about the wrappers and full
-types in Parsec.
+which we've been using, and some limited notes about the wrappers and
+full types in Parsec.
 
 > module FunctionsAndTypesForParsing where
 >
@@ -76,7 +76,8 @@ There is an alternative: you can get this code to compile without a
 type signature by using the NoMonomorphismRestriction language
 pragma. You can also see the type signature that GHC will choose for
 this function by commenting the type signature and using -Wall and
--XNoMonomorphismRestriction together.
+-XNoMonomorphismRestriction together. Using NoMonomorphismRestriction
+is a popular solution to these sorts of problems in haskell.
 
 It's up to you whether you prefer to always write type signatures when
 you are developing parsing code, or use the NoMonomorphismRestriction

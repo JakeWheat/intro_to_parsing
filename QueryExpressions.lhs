@@ -101,8 +101,7 @@ TODO: shorten the names of these examples
 >     [("select 1", makeSelect {qeSelectList = [(NumLit 1,Nothing)]})]
 
 Here are a couple of wrappers for `symbol` and `keyword` which wrap
-them with void. Although this is often considered bad style in
-Haskell, in this case it is quite convenient.
+them with void.
 
 > keyword_ :: String -> Parser ()
 > keyword_ = void . keyword
@@ -124,7 +123,7 @@ Cases: 1  Tried: 1  Errors: 0  Failures: 0
 Counts {cases = 1, tried = 1, errors = 0, failures = 0}
 ```
 
-Let's rewrite it in the Applicative style.
+Let's rewrite it in the Applicative and mostly point free style.
 
 > singleSelectItemApplicative :: Parser QueryExpr
 > singleSelectItemApplicative =
@@ -174,20 +173,20 @@ We can write names for the columns produced from a select list using
 the keyword `as`, and we can miss out the `as`:
 
 ```sql
-select a as a, b as b, f(c) c;
+select a as a1, b as b1, f(c) as c1;
 
 -- no as
-select a a, b b;
+select a a1, b b1;
 ```
 
 > selectListTests :: [(String,QueryExpr)]
 > selectListTests =
->     [("select a as a, b as b"
->      ,makeSelect {qeSelectList = [(Iden "a", Just "a")
->                                  ,(Iden "b", Just "b")]})
->     ,("select a a, b b"
->      ,makeSelect {qeSelectList = [(Iden "a", Just "a")
->                                  ,(Iden "b", Just "b")]})
+>     [("select a as a1, b as b1"
+>      ,makeSelect {qeSelectList = [(Iden "a", Just "a1")
+>                                  ,(Iden "b", Just "b1")]})
+>     ,("select a a1, b b1"
+>      ,makeSelect {qeSelectList = [(Iden "a", Just "a1")
+>                                  ,(Iden "b", Just "b1")]})
 >     ] ++ multipleSelectItemsTests
 >       ++ singleSelectItemTests
 

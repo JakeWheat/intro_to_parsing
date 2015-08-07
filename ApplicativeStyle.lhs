@@ -4,9 +4,10 @@ last tutorial, and make it much more concise, and also make it more
 readable. We are going to do this mainly by using functions from the
 typeclass Applicative.
 
-Remember you can (and should) use the functions `regularParse` et
-al. to try out the all these parsers in ghci, and you can write your
-own variations to experiment with if you are unsure about anything.
+Remember you can (and should) use the functions `regularParse` and its
+variations (TODO list them here) to try out the all these parsers in
+ghci, and you can write your own variations to experiment with if you
+are unsure about anything.
 
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Char (oneOf, char, digit, letter, satisfy)
@@ -95,7 +96,7 @@ or
 liftM ctor =<< pa
 ```
 
-(`liftM` is in Control.Monad)
+(`liftM` is in the module `Control.Monad`)
 
 These `liftM` versions effectively mean the same thing as the previous
 versions with `fmap` and `<$>`.
@@ -109,20 +110,13 @@ Ctor <$> pa <*> pb <*> pc
 for three args, and so on. So you use `<$>` between the pure
 constructor and the first arg, then `<*>` between each subsequent arg.
 
-I always use `(<$>)` and `(<*>)` in parsing code, rather than `fmap`
-and `ap`. As far as I can tell, everyone else also does this. In fact,
-`ap` seems to have a Monad constraint instead of an Applicative
-constraint, unlike `(<*>)`, which only needs Applicative. I'm not sure
-if this is a historical thing or there is some other reason why it is
-this way.
-
 Let's go over the simple expression parsers and try to rewrite them
 using this style. We will see a few other new functions. I will break
 things down into a lot of steps.
 
 = lexeme
 
-Here is the old lexeme parser, 'D' for 'do notation'.
+Here is the old lexeme parser, 'D' suffix for 'do notation'.
 
 > lexemeD :: Parser a -> Parser a
 > lexemeD p = do
@@ -218,7 +212,7 @@ Let's break it down:
 >     int :: Parser Integer
 >     int = read <$> lexemeA (many1 digit)
 
-In terms of style, I'm not sure which I prefer,
+In terms of style, which do you think looks better:
 `(a . b) <$> p` or `a <$> b <$> p`.
 
 The next step for num, we can eliminate the temporary name `n` and the
@@ -277,8 +271,6 @@ Here is another way of making the function a little better:
 >   where
 >     validFirstChar a = isLetter a || a == '_'
 >     validNonFirstChar a = validFirstChar a || isDigit a
-
-I will stick with the first alternative for now.
 
 We can lift the `(:)` using the Applicative operators.
 
@@ -365,7 +357,7 @@ You could also write the `op` parser inline:
 > simpleExprA2 :: Parser SimpleExpr
 > simpleExprA2 = chainl1 termD (Add <$ lexemeA (char '+'))
 
-Maybe this last step makes it less readable.
+Maybe this last step makes it less readable?
 
 = summary
 

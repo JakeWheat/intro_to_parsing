@@ -27,7 +27,7 @@ different to what we used at the end of the last tutorial. You can try
 reimplementing each of the Text.Parsec.Combinator module functions
 using the Applicative style. See if you can find a way to reassure
 yourself that the rewritten versions you make are correct, perhaps via
-automated testing, or perhaps some other method.
+writing automated tests, or perhaps some other method.
 
 You should be able to easily understand the implementation of all the
 functions in Text.Parsec.Combinator except possibly `anyToken` and
@@ -115,7 +115,7 @@ expecting "by"
 Right ()
 ```
 
-If we use try on the first option, then it all works fine.
+If we use `try` on the first option, then it all works fine.
 
 ```
 *Main> regularParse (choice [try byKeyword,betweenKeyword]) "by"
@@ -170,7 +170,9 @@ this:
 
 It hardly seems worth it to make this change, but it might be slightly
 quicker to read and understand if you aren't already familiar with
-some code or haven't viewed it for a while.
+some code or haven't viewed it for a while. This is good for 'code
+maintenance', where we need to fix bugs or add new features quickly to
+code we haven't looked at for two years or something.
 
 Here are the support functions for this parser.
 

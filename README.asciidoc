@@ -20,69 +20,69 @@ https://github.com/JakeWheat/intro_to_parsing
 
 link:GettingStarted.lhs[]
 
-<<getting-started, Getting Started>>
+// <<getting-started, Getting Started>>
 
 Introduction to parsing with Parsec, including a review of
 Text.Parsec.Char functions.
 
 link:VerySimpleExpressions.lhs[]
 
-<<very-simple-expression-parsing, Very simple expression parsing>>
+// <<very-simple-expression-parsing, Very simple expression parsing>>
 
 Creating a very simple expression language parser, and introducing
 some functions from Text.Parsec.Combinator.
 
 link:ApplicativeStyle.lhs[]
 
-<<applicative-style-parsing-code, Applicative style parsing code>>
+// <<applicative-style-parsing-code, Applicative style parsing code>>
 
 Rewriting the simple expression parser code in a more succinct style.
 
 link:CombinatorReview.lhs[]
 
-<<combinator-review,Combinator review>>
+// <<combinator-review,Combinator review>>
 
 Review and examples of all functions from Text.Parsec.Combinator, and
 some from Control.Applicative and Control.Monad.
 
 link:FunctionsAndTypesForParsing.lhs[]
 
-<<functions-and-types-for-parsing,Functions and types for parsing>>
+// <<functions-and-types-for-parsing,Functions and types for parsing>>
 
 The utility functions used in the previous tutorials, plus some notes
 on types in Parsec.
 
 link:TextParsecExpr.lhs[]
 
-<<parsing-expressions-with-fixity, Parsing expressions with fixity>>
+// <<parsing-expressions-with-fixity, Parsing expressions with fixity>>
 
 This covers using the Text.Parsec.Expr for expression parsing with
 prefix, postfix and infix operators with fixity.
 
 link:AnIssueWithTokenParsers.lhs[]
 
-<<an-issue-with-token-parsers, An issue with token parsers>>
+// <<an-issue-with-token-parsers, An issue with token parsers>>
 
 Looks at an issue we have with the way the symbol parser in the
 Text.Parsec.Expr tutorial was used, and some possible fixes.
 
 link:TextParsecPerm.lhs[]
 
-<<permutation-parsing, Permutation parsing>>
+// <<permutation-parsing, Permutation parsing>>
 
 This covers the Text.Parsec.Perm module which is used for parsing
 different things in flexible order.
 
 link:TextParsecToken.lhs[]
 
-<<token-parsing, Token parsing>>
+// <<token-parsing, Token parsing>>
 
 This covers Text.Parsec.Token which can be used to create token
 parsers easily.
 
 link:ValueExpressions.lhs[]
 
-<<value-expressions, Value expressions>>
+// <<value-expressions, Value expressions>>
 
 This covers building a parser a subset of value expressions from SQL,
 which are an extension of the simple expression types and parsers
@@ -90,21 +90,21 @@ covered in previous tutorials.
 
 link:QueryExpressions.lhs[]
 
-<<query-expressions, Query expressions>>
+// <<query-expressions, Query expressions>>
 
 This covers building a parser to parse query expressions with select
 lists, simple from, where, group by, having and order by.
 
 link:FromClause.lhs[]
 
-<<from-clause, From clause>>
+// <<from-clause, From clause>>
 
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
 
 link:SimpleSQLQueryParser0.lhs[]
 
-<<simple-sql-query-parser, Simple SQL query parser>>
+// <<simple-sql-query-parser, Simple SQL query parser>>
 
 Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
@@ -112,13 +112,13 @@ standalone module.
 
 link:PrettyPrinting0.lhs[]
 
-<<pretty-printing, Pretty printing>>
+// <<pretty-printing, Pretty printing>>
 
 This quick module covers a simple pretty printer for our SQL ast.
 
 link:ErrorMessages.lhs[]
 
-<<error-messages, Error messages>>
+// <<error-messages, Error messages>>
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.

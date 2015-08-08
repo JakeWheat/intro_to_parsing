@@ -13,140 +13,147 @@ and you can view the files directly in the github repository here:
 
 https://github.com/JakeWheat/intro_to_parsing
 
-== Getting Started
+=== Summary of sections
+
+// the first link for each section will work in the readme on github,
+// the second link is for the rendered html and doesn't work here
 
 link:GettingStarted.lhs[]
+
+<<getting-started, Getting Started>>
 
 Introduction to parsing with Parsec, including a review of
 Text.Parsec.Char functions.
 
-== Very simple expressions
-
 link:VerySimpleExpressions.lhs[]
+
+<<very-simple-expression-parsing, Very simple expression parsing>>
 
 Creating a very simple expression language parser, and introducing
 some functions from Text.Parsec.Combinator.
 
-== Applicative style
-
 link:ApplicativeStyle.lhs[]
+
+<<applicative-style-parsing-code, Applicative style parsing code>>
 
 Rewriting the simple expression parser code in a more succinct style.
 
-== Combinator review
-
 link:CombinatorReview.lhs[]
+
+<<combinator-review,Combinator review>>
 
 Review and examples of all functions from Text.Parsec.Combinator, and
 some from Control.Applicative and Control.Monad.
 
-== Functions and types for parsing
-
 link:FunctionsAndTypesForParsing.lhs[]
+
+<<functions-and-types-for-parsing,Functions and types for parsing>>
 
 The utility functions used in the previous tutorials, plus some notes
 on types in Parsec.
 
-== Expression parsers
-
 link:TextParsecExpr.lhs[]
+
+<<parsing-expressions-with-fixity, Parsing expressions with fixity>>
 
 This covers using the Text.Parsec.Expr for expression parsing with
 prefix, postfix and infix operators with fixity.
 
-== An issue with token parsers
-
 link:AnIssueWithTokenParsers.lhs[]
+
+<<an-issue-with-token-parsers, An issue with token parsers>>
 
 Looks at an issue we have with the way the symbol parser in the
 Text.Parsec.Expr tutorial was used, and some possible fixes.
 
-== Permutation parsers
-
 link:TextParsecPerm.lhs[]
+
+<<permutation-parsing, Permutation parsing>>
 
 This covers the Text.Parsec.Perm module which is used for parsing
 different things in flexible order.
 
-== Token parsers
-
 link:TextParsecToken.lhs[]
+
+<<token-parsing, Token parsing>>
 
 This covers Text.Parsec.Token which can be used to create token
 parsers easily.
 
-== Value expressions
-
 link:ValueExpressions.lhs[]
+
+<<value-expressions, Value expressions>>
 
 This covers building a parser a subset of value expressions from SQL,
 which are an extension of the simple expression types and parsers
 covered in previous tutorials.
 
-== Query expressions
-
 link:QueryExpressions.lhs[]
+
+<<query-expressions, Query expressions>>
 
 This covers building a parser to parse query expressions with select
 lists, simple from, where, group by, having and order by.
 
-== From clause
-
 link:FromClause.lhs[]
+
+<<from-clause, From clause>>
 
 This extend the parser for query expressions to support a from clause
 with much more features including joins.
 
-== Simple SQL query parser
-
 link:SimpleSQLQueryParser0.lhs[]
+
+<<simple-sql-query-parser, Simple SQL query parser>>
 
 Here is the code from ValueExpressions, QueryExpressions and
 FromClause plus tests put together and rearranged as a coherent
 standalone module.
 
-== Pretty printing
-
 link:PrettyPrinting0.lhs[]
+
+<<pretty-printing, Pretty printing>>
 
 This quick module covers a simple pretty printer for our SQL ast.
 
-== Error messages
-
 link:ErrorMessages.lhs[]
+
+<<error-messages, Error messages>>
 
 In this document, we will explore error messages with parsec and how
 restructuring parser code can lead to better or worse error messages.
 
-== Going further
+=== Going further
 
 If you are interesting in SQL parsing, check out the project to build
 a complete SQL parser here:
-link:http://jakewheat.github.io/simple-sql-parser/[]. The parsing code
-in the simple-sql-parser project is based on this tutorial code.
+http://jakewheat.github.io/simple-sql-parser/. The parsing code in the
+simple-sql-parser project is based on this tutorial code.
 
-== Later documents
+////
+
+Later documents
 
 Additional provisional documents not yet started:
 
-=== Parsing TPC-H queries
+Parsing TPC-H queries
 
 We will use the tpch queries as examples to help improve the pretty
 printer. First there are a few extra bits of syntax to be able to
 parse these queries
 
-=== Pretty printing part 2
+Pretty printing part 2
 
 some tweaks to the pretty printer to improve the layout for the tpch
 queries
 
-=== Writing tests
+Writing tests
 
 Here we will take the ad hoc tests and build an organised test suite
 with a wrapper for hunit, wrapper for test.framework wrapper and maybe
 tasty
 
-=== Refactored project + cabal package
+Refactored project + cabal package
 
 In this tutorial, we will take the sql parser, pretty printer and
 tests, and create a complete cabal package.
@@ -154,34 +161,34 @@ tests, and create a complete cabal package.
 TODO: talk about robustness and the casual way the parser has been put
 together and the casual way issues have been tackled.
 
-=== Writing a command line sql interface
+Writing a command line sql interface
 
 quick experiment to try to implement the front end for a multiline sql
 command line using fake incremental parsing which parsec doesn't
 support directly.
 
-=== Position annotation
+Position annotation
 
 In this tutorial, we will add position annotation to the parsing, so
 that a later stage could, e.g., provide type error messages with the
 correct line and column numbers.
 
-=== Dialects
+Dialects
 
 In this tutorial, we will discuss how we can support other SQL dialects
 
-=== Separate lexer
+Separate lexer
 
 In this tutorial, we will look at creating a proper separate lexer to
 see how it is done, and remark on what the tradeoffs seem to be.
 
-=== Fixing fixity
+Fixing fixity
 
 Parsing full SQL expressions is a mess, and trying to do the fixity at
 parse time has many downsides. Here is another approach, to ignore
 fixity at parse time and fix it in a pass on the ast after parsing.
 
-=== Quasiquotes
+Quasiquotes
 
 In this tutorial, we will create quasiquoters for sql query
 expressions and value expressions, and see how powerful this can be
@@ -189,15 +196,16 @@ expressions and value expressions, and see how powerful this can be
 
 Something about syntax highlighting, generating documentation + links?
 
+////
 
-== Extras
+=== Extras
 
-link:ParseString.lhs[]
+* link:ParseString.lhs[]
 
 an executable which contains the boilerplate to run a parsec parser on
 a string passed as an argument
 
-link:ParseFile.lhs[]
+* link:ParseFile.lhs[]
 
 an executable which contains the boilerplate to run a parsec parser on
 a file passed as an argument

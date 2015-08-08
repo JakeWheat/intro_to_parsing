@@ -1,5 +1,6 @@
 
-= Overview
+[[functions-and-types-for-parsing]]
+= Functions and types for parsing
 
 In this file is the source and explanation for the parsing functions
 which we've been using, and some limited notes about the wrappers and
@@ -16,7 +17,7 @@ full types in Parsec.
 > import Control.Monad (void)
 
 
-= Functions for parsing
+== Functions for parsing
 
 Here are the testing functions which were used earlier:
 
@@ -64,7 +65,7 @@ can understand the code now. You can see them online here:
 
 <https://github.com/JakeWheat/intro_to_parsing/blob/master/ParseString.lhs>
 
-= type signatures revisited
+== type signatures revisited
 
 todo: update this to refer to real parsec instead of the string
 wrappers here.
@@ -88,7 +89,7 @@ explicit type signatures you usually get much simpler compiler error
 messages.
 
 
-= Parser
+== Parser
 
 The definition of Parser and a partial explanation of the full type
 signature.
@@ -133,7 +134,7 @@ String () Identity a`.
 I.e. the source is String, the user state is (), and the underlying monad
 is Identity.
 
-= Other information
+== Other information
 
 TODO: Here is some other information on Parsec and Haskell:
 links, tutorials on fp, section in rwh, lyah?, old parsec docs,

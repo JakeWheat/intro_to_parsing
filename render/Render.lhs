@@ -2,17 +2,12 @@
 This code is to take the .lhs and add some formatting so it renders
 nicely with asciidoctor.
 
-TODO: remove the bird feet also?
+TODO
 
-fix headings
-add toc stuff
-fix the build website
+concat docs then render as multiple pages
+get the inter/intra doc links working
 
-syntax highlighing
-
-asterisk issues: maybe just escape the first on on the line
-if it is not source
-and there are more * on that line
+find a better fix for the * issue
 
 > import System.Environment
 > import Data.Char
@@ -22,11 +17,13 @@ and there are more * on that line
 
 > main :: IO ()
 > main = do
->     [fn] <- getArgs
->     src <- readFile fn
->     let title = makeTitle $ takeBaseName fn
->     putStrLn $ ":toc: right\n:toclevels: 8\n= " ++ title ++ "\n"
->     putStrLn . unlines . map fixHeadings . addBlocks . lines $ src
+>     --[fn] <- getArgs
+>     src <- getContents -- readFile fn
+>     --let title = makeTitle $ takeBaseName fn
+>     --putStrLn $ ":toc: right\n:toclevels: 8\n:sectnums:\n"
+>     --putStrLn "= Introduction to parsing in Haskell with Parsec\n"
+>     putStrLn . unlines . map fixHeadings
+>       . addBlocks False . lines $ src
 >   where
 >     makeTitle (c:c1:cs) | isUpper c && isUpper c1 =
 >       let (rest,cs') = span isUpper cs
@@ -41,12 +38,20 @@ and there are more * on that line
 >     makeTitle [] = []
 >     fixHeadings ('=':xs) = '=':'=':xs
 >     fixHeadings xs = xs
->     addBlocks (l0:l1:ls) | not (isLiterate l0) && isLiterate l1 =
->       l0:"[source,haskell]\n----":addBlocks (l1:ls)
->     addBlocks (l0:l1:ls)| isLiterate l0 && not (isLiterate l1) =
->       l0:"----":addBlocks (l1:ls)
->     addBlocks (l:ls) = l : addBlocks ls
->     addBlocks [] = []
+>     addBlocks False (l:ls)
+>         | isLiterate l =
+>             "[source,haskell]\n----" : stripLiterate l
+>             : addBlocks True ls
+>         | otherwise = l : addBlocks False ls
+
+>     addBlocks True (l:ls)
+>         | isLiterate l =
+>             stripLiterate l : addBlocks True ls
+>         | otherwise = "----" : l : addBlocks False ls
+>     addBlocks _ [] = []
+>     stripLiterate ('>':' ':l) = l
+>     stripLiterate (">") = ""
+>     stripLiterate l = l
 >     isLiterate ('>':_) = True
 >     isLiterate _ = False
 

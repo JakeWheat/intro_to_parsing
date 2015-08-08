@@ -1,5 +1,6 @@
 
-= Overview
+[[pretty-printing]]
+= Pretty printing
 
 Here is a pretty printer for the parser version 0.
 
@@ -32,12 +33,12 @@ By using a pretty printer library, we can get human readable source
 very easily compared with trying to convert directly to strings
 ourselves.
 
-= api
+== api
 
 > prettyQueryExpr :: QueryExpr -> String
 > prettyQueryExpr = render . queryExpr
 
-= value expressions
+== value expressions
 
 > valueExpr :: ValueExpr -> Doc
 > valueExpr (StringLit s) = quotes $ text s
@@ -60,7 +61,7 @@ ourselves.
 >                        ,text "then" <+> valueExpr t]
 > valueExpr (Parens e) = parens $ valueExpr e
 
-= query expressions
+== query expressions
 
 > queryExpr :: QueryExpr -> Doc
 > queryExpr (Select sl fr wh gb hv ob) = sep
@@ -105,7 +106,7 @@ ourselves.
 >     ml [] _ = empty
 >     ml l r = r l
 
-= helpers
+== helpers
 
 > commaSep :: [Doc] -> Doc
 > commaSep = sep . punctuate comma
@@ -121,7 +122,7 @@ a and b
 select a from t inner join u using (a, b)
 ```
 
-= tests
+== tests
 
 Now we can do some tests: we take the previous test data, and for each
 test add an additional test which pretty prints then parses the

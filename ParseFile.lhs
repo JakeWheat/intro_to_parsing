@@ -1,5 +1,5 @@
 
-= Overview
+= Parsing a file executable
 
 This is the example exe file which will parse a string from the file
 given on the command line. You can substitute your own parser for the

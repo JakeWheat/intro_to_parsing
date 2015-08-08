@@ -1,5 +1,6 @@
 
-= Overview
+[[very-simple-expression-parsing]]
+= Very simple expression parsing
 
 In this tutorial we will develop a parser for a very simple expression
 language, and start learning about the set of combinators which comes
@@ -15,7 +16,7 @@ with Parsec.
 > import Data.Char (isLetter, isDigit)
 > import FunctionsAndTypesForParsing
 
-= num
+== num
 
 The first element we will have in this expression language is positive
 integral numbers:
@@ -83,7 +84,7 @@ Right 123456
 Right *** Exception: Prelude.read: no parse
 ```
 
-= var
+== var
 
 For var, we have to decide on a syntax for the identifiers. Let's go
 for a common choice: identifiers must start with a letter or
@@ -113,7 +114,7 @@ Try it out in ghci. I like to try things which you expect to work, and
 also to try things which you expect to not work and make sure you get
 an error.
 
-= parens
+== parens
 
 The parens parser will eventually parse any expression inside
 parentheses. First it will just parse integers inside parentheses.
@@ -190,7 +191,7 @@ expecting digit or ")"
 
 We will look at this issue below.
 
-= add
+== add
 
 Now we will write a little parser to parse strings like 'a+b' where a
 and b are numbers.
@@ -222,7 +223,7 @@ expecting digit or "+"
 
 ```
 
-= whitespace
+== whitespace
 
 Here is a parser which will skip zero or more whitespace characters.
 
@@ -334,7 +335,7 @@ Here is the shorter version of this function using `(>>)`:
 Try rewriting the SingleAdd parser to use `lexeme`, and test it out to
 convince yourself that it skips whitespace correctly.
 
-= simple expr
+== simple expr
 
 Now we are ready to write a parser which parses simple expressions
 made from these components. Here is the data type for these
@@ -414,7 +415,7 @@ Here is the add parser using `numE` also.
 >     e1 <- numE
 >     return $ Add e0 e1
 
-== choice
+=== choice
 
 To combine these, we can use an operator called `(<|>)`:
 
@@ -763,12 +764,12 @@ and see if you can understand how it works. If you can't work it out,
 you could come back to it later when you have more experience writing
 parsing code.
 
-= Testing with the examples
+== Testing with the examples
 
 TODO: write a little manual tester that accepts a parser and a list of
 examples, and checks they all parse correctly.
 
-= Testing with quickcheck
+== Testing with quickcheck
 
 Let's see if we can check with quickcheck. It's a bit tricky testing
 parsers in this way, but one way to do something useful is to generate
@@ -776,12 +777,12 @@ random asts, convert them to concrete syntax, parse them, and check
 the result. We can write a simple 'pretty printer' to convert an ast
 to concrete syntax.
 
-== a pretty printer
+=== a pretty printer
 
 TODO: a really simple pretty printer just pasting strings together, no
 layout.
 
-== the quick check code
+=== the quick check code
 
 TODO: write a quickcheck property and arbitary instance and show
 running it at the ghci prompt

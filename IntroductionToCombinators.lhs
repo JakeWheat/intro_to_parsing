@@ -1,5 +1,5 @@
 
-= Overview
+= Introduction to combinators
 
 In this tutorial we will develop a parser for a very simple expression
 language, and start learning about the set of combinators which comes
@@ -44,7 +44,7 @@ along the way.
 We will write a parser for each constructor separately, then look at
 how we can write a parser for all of them together.
 
-=== Num
+==== Num
 
 To parse a number, we need to parse one or more digits, and then read
 the resulting string. We can use the combinator 'many1' to help with
@@ -71,7 +71,7 @@ It applies the parser given one or more times, returning the result.
 
 TODO: example show what happens when you use 'many' instead of 'many1'
 
-=== Var
+==== Var
 
 For var, we have to decide on a syntax for the identifiers. Let's go
 for a common choice: identifiers must start with a letter or
@@ -134,7 +134,7 @@ to write this:
     _ <- char '+'
 ```
 
-=== parens
+==== parens
 
 > parens :: Parser SimpleExpr
 > parens = do
@@ -147,7 +147,7 @@ The same two issues from the 'add' parser apply here: whitespace and
 lack of a general simple expression parser, so it just uses the num
 parser again instead. Now we will tackle the whitespace issue.
 
-== whitespace and lexeme parsing
+=== whitespace and lexeme parsing
 
 Here is a parser which will skip zero or more whitespace characters.
 
@@ -376,7 +376,7 @@ the previous problem with add calling simpleExpr recursively. There is
 lots of discussion about these issues in Parsing theory documents you
 can find online, etc..
 
-= general simple expression parser
+== general simple expression parser
 
 Here is the all the parser code written out again for clarity.
 
@@ -416,12 +416,12 @@ Here is the all the parser code written out again for clarity.
 >     term = numD <|> varD <|> parensD
 
 
-== Testing with the examples
+=== Testing with the examples
 
 TODO: write a little manual tester that accepts a parser and a list of
 examples, and checks they all parse correctly.
 
-== Testing with quickcheck
+=== Testing with quickcheck
 
 Let's see if we can check with quickcheck. It's a bit tricky testing
 parsers in this way, but one way to do something useful is to generate
@@ -429,12 +429,12 @@ random asts, convert them to concrete syntax, parse them, and check
 the result. We can write a simple 'pretty printer' to convert an ast
 to concrete syntax.
 
-=== a pretty printer
+==== a pretty printer
 
 TODO: a really simple pretty printer just pasting strings together, no
 layout.
 
-=== the quick check code
+==== the quick check code
 
 TODO: write a quickcheck property and arbitary instance and show
 running it at the ghci prompt

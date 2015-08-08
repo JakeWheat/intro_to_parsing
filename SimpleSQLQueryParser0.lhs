@@ -1,5 +1,6 @@
 
-= Overview
+[[simple-sql-query-parser]]
+= Simple SQL query parser
 
 Here is the complete syntax, parser and tests for the value and query
 expressions so far as a self contained module
@@ -20,9 +21,9 @@ expressions so far as a self contained module
 > import FunctionsAndTypesForParsing
 > import Debug.Trace
 
-= Supported SQL
+== Supported SQL
 
-== comments
+=== comments
 
 ```sql
 -- single line comment
@@ -34,9 +35,9 @@ comment
 
 The `/* */` comments do not nest.
 
-== value expressions
+=== value expressions
 
-=== literals
+==== literals
 
 postive integral literals and string literals with single quote,
 without escaping of single quote within string (so there is no way to
@@ -47,7 +48,7 @@ create a string literal with a single quote in it).
 500
 'string literal'
 ```
-=== identifiers
+==== identifiers
 
 Unquoted identifiers only, an identifier may start with a letter or
 underscore, and contain letters, underscores and digits.
@@ -59,7 +60,7 @@ _test_
 a123
 ```
 
-=== dotted identifiers
+==== dotted identifiers
 
 Supports two part dotted identifiers only. Both parts must parse
 according to the rules for regular identifiers.
@@ -69,7 +70,7 @@ t.a
 something.something_else
 ```
 
-=== star
+==== star
 
 Star, plus dotted star using the identifier rules for the first part.
 
@@ -78,7 +79,7 @@ Star, plus dotted star using the identifier rules for the first part.
 t.*
 ```
 
-=== function application
+==== function application
 
 The function name must parse as a valid identifier.
 
@@ -88,7 +89,7 @@ g(1)
 h(2,'something')
 ```
 
-=== operators
+==== operators
 
 Here is the range of operators supported.
 
@@ -111,7 +112,7 @@ a like b
 not a
 ```
 
-=== case expression
+==== case expression
 
 ```sql
 case a
@@ -131,7 +132,7 @@ end
 
 The else branch is optional in both cases.
 
-=== parentheses
+==== parentheses
 
 ```sql
 (1 + 2) * 3
@@ -139,7 +140,7 @@ The else branch is optional in both cases.
 
 Parentheses are explicit in the abstract syntax.
 
-== query expressions
+=== query expressions
 
 TODO: examples
 
@@ -173,7 +174,7 @@ desc , and no 'nulls first' or 'nulls last' syntax.
 No support for offset and fetch first, or variations.
 
 
-= Abstract syntax
+== Abstract syntax
 
 > data ValueExpr = StringLit String
 >                | NumLit Integer
@@ -223,9 +224,9 @@ No support for offset and fetch first, or variations.
 >                    | JoinNatural
 >                    deriving (Eq,Show)
 
-= Value expression parsing
+== Value expression parsing
 
-== term components
+=== term components
 
 > num :: Parser ValueExpr
 > num = NumLit <$> integer
@@ -251,7 +252,7 @@ No support for offset and fetch first, or variations.
 > app :: Parser ValueExpr
 > app = App <$> identifier <*> parens (commaSep $ valueExpr [])
 
-== case
+=== case
 
 > caseValue :: Parser ValueExpr
 > caseValue =
@@ -267,7 +268,7 @@ No support for offset and fetch first, or variations.
 >    caseVal = valueExpr blackList
 >    blackList = ["case", "when", "then", "else", "end"]
 
-== term
+=== term
 
 > term :: [String] -> Parser ValueExpr
 > term blackList = choice [caseValue
@@ -280,7 +281,7 @@ No support for offset and fetch first, or variations.
 >                         ,stringLit
 >                         ,star]
 
-== operators
+=== operators
 
 > table :: [[E.Operator ValueExpr]]
 > table = [[prefix "-", prefix "+"]
@@ -311,12 +312,12 @@ No support for offset and fetch first, or variations.
 >         E.Infix (mkBinOp name <$ keyword name) assoc
 >     prefixK name = E.Prefix (PrefOp name <$ keyword name)
 
-== valueExpr
+=== valueExpr
 
 > valueExpr :: [String] -> Parser ValueExpr
 > valueExpr blackList = E.buildExpressionParser table (term blackList)
 
-= Query expression parsing
+== Query expression parsing
 
 > selectList :: Parser [(ValueExpr, Maybe String)]
 > selectList = keyword_ "select" *> commaSep1 selectItem
@@ -339,7 +340,7 @@ No support for offset and fetch first, or variations.
 > orderBy = keyword_ "order" *> keyword_ "by"
 >           *> commaSep1 (valueExpr [])
 
-== from clause
+=== from clause
 
 > from :: Parser [TableRef]
 > from = keyword_ "from" >> commaSep1 tref
@@ -397,7 +398,7 @@ No support for offset and fetch first, or variations.
 >            ,keyword_ "using" >> JoinUsing <$> parens (commaSep1 identifier)
 >            ]
 
-== queryExpr
+=== queryExpr
 
 > queryExpr :: Parser QueryExpr
 > queryExpr = Select
@@ -408,7 +409,7 @@ No support for offset and fetch first, or variations.
 >             <*> optionMaybe having
 >             <*> option [] orderBy
 
-= tokens
+== tokens
 
 > whitespace :: Parser ()
 > whitespace =
@@ -456,7 +457,7 @@ No support for offset and fetch first, or variations.
 > comma :: Parser Char
 > comma = lexeme $ char ','
 
-= helper functions
+== helper functions
 
 > keyword :: String -> Parser String
 > keyword k = try $ do
@@ -488,7 +489,7 @@ No support for offset and fetch first, or variations.
 > suffixWrapper :: (a -> Parser a) -> a -> Parser a
 > suffixWrapper p a = p a <|> return a
 
-= the parser api
+== the parser api
 
 > parseQueryExpr :: String -> Either ParseError QueryExpr
 > parseQueryExpr = parse (whitespace *> queryExpr <* eof) ""
@@ -497,7 +498,7 @@ No support for offset and fetch first, or variations.
 > parseValueExpr = parse (whitespace *> valueExpr [] <* eof) ""
 
 
-= tests
+== tests
 
 > data TestItem = Group String [TestItem]
 >               | ValueExpressionTest String ValueExpr

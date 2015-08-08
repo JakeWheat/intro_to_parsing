@@ -1,5 +1,6 @@
 
-= Overview
+[[from-clause]]
+= From clause
 
 In this tutorial, we extend the from clause support to the following:
 we will support implicit and explicit joins, including keywords
@@ -30,7 +31,7 @@ QueryExpressions.lhs)
 > import QueryExpressions (selectList,whereClause,groupByClause,having,orderBy
 >                         ,commaSep1, keyword_,blackListIdentifier)
 
-= Abstract syntax
+== Abstract syntax
 
 Here are is the updated `QueryExpr` and the new `TableRef` abstract
 syntax types.
@@ -83,7 +84,7 @@ First we will develop the standalone from clause parser, then we will
 update the query expression syntax and parsing to incorporate our new
 from clause parser.
 
-= simple table name
+== simple table name
 
 Let's start with something simple: a from clause can be multiple comma
 separated tablerefs, aka an implicit join.
@@ -103,7 +104,7 @@ Counts {cases = 1, tried = 1, errors = 0, failures = 0}
 Let's do the query expression, parens and alias first, before tackling
 joins.
 
-= subquery
+== subquery
 
 Here is the example:
 
@@ -131,7 +132,7 @@ Here is the query expression parser we can use:
 >     trefTerm = choice [TRSimple <$> identifier
 >                       ,TRQueryExpr <$> parens (queryExpr1 from1)]
 
-= parens
+== parens
 
 We can't do a sensible example for these right now - we need explicit
 joins and then the parens can be used to override the associativity of
@@ -152,7 +153,7 @@ joins.
 >                       ,try (TRQueryExpr <$> parens (queryExpr1 from2))
 >                       ,TRParens <$> parens trefTerm]
 
-= alias
+== alias
 
 > trAliasTests :: [(String,[TableRef])]
 > trAliasTests = [("from a as b", [TRAlias (TRSimple "a") "b"])
@@ -177,7 +178,7 @@ TODO: ?? not sure about this
 
 How to make it keep nesting?
 
-= joins
+== joins
 
 Here is a casual sketch of the target grammar:
 
@@ -196,7 +197,7 @@ join tref
 Let's start with parsers for the 'join operator' in the middle and for
 the join condition:
 
-== join type
+=== join type
 
 > joinType :: Parser JoinType
 > joinType = choice
@@ -259,7 +260,7 @@ I thought about factoring out the common bits with the joinType parser:
 But I think the longer version is much easier to follow, even if it is
 a little more boring.
 
-== join condition
+=== join condition
 
 The idea with the join condition is that we pass a bool to say whether
 we've already seen the 'natural' keyword. If so, then we don't try to
@@ -291,7 +292,7 @@ expecting end of input
 Right JoinNatural
 ```
 
-== simple binary join
+=== simple binary join
 
 Let's try some simple binary joins:
 
@@ -477,7 +478,7 @@ We get left associative with this code. I don't know if this is correct.
 
 We should do some more testing to make sure this code is good. TODO
 
-= query expressions
+== query expressions
 
 Let's create the full query expression parser now:
 

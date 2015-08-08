@@ -1,5 +1,6 @@
 
-= Overview
+[[an-issue-with-token-parsers]]
+= An issue with token parsers
 
 This is a tutorial about an issue with the token parsing we have so
 far.

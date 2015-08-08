@@ -1,5 +1,6 @@
 
-= Overview
+[[combinator-review]]
+= Combinator review
 
 In this tutorial we will go through all the functions in
 Text.Parsec.Combinator, and some useful ones in Control.Applicative
@@ -17,7 +18,7 @@ and Control.Monad as well.
 > import Data.Char (isLetter, isDigit)
 > import FunctionsAndTypesForParsing
 
-= Text.Parsec.Combinator
+== Text.Parsec.Combinator
 
 You should look at the source for these functions and try to
 understand how they are implemented.
@@ -35,7 +36,7 @@ You should be able to easily understand the implementation of all the
 functions in Text.Parsec.Combinator except possibly `anyToken` and
 `notFollowedBy`.
 
-== choice
+=== choice
 
 ```haskell
 choice :: [Parser a] -> Parser a
@@ -67,7 +68,7 @@ unexpected "c"
 expecting "a" or "b"
 ```
 
-=== using with try
+==== using with try
 
 If a parser fails with `(<|>)` or `choice`, then it will only try the
 next parser if the last parser consumed no input.
@@ -127,7 +128,7 @@ Right ()
 Right ()
 ```
 
-== count
+=== count
 
 ```haskell
 count :: Int -> Parser a -> Parser [a]
@@ -155,7 +156,7 @@ expecting "a"
 Right "aabaa"
 ```
 
-== between
+=== between
 
 ```haskell
 between :: Parser open -> Parser close -> Parser a -> Parser a
@@ -187,7 +188,7 @@ Here are the support functions for this parser.
 > whitespace :: Parser ()
 > whitespace = void $ oneOf " \n\t"
 
-== option
+=== option
 
 ```haskell
 option :: a -> Parser a -> Parser a
@@ -218,7 +219,7 @@ expecting "a" or "b"
 Right ""
 ```
 
-== optionMaybe
+=== optionMaybe
 
 ```haskell
 optionMaybe :: Parser a -> Parser (Maybe a)
@@ -252,7 +253,7 @@ expecting "a" or "b"
 Right Nothing
 ```
 
-== optional
+=== optional
 
 ```haskell
 optional :: Parser a -> Parser ()
@@ -286,7 +287,7 @@ expecting "a" or "b"
 Right ((),"aaaac")
 ```
 
-== skipMany1
+=== skipMany1
 
 ```haskell
 skipMany1 :: Parser a -> Parser ()
@@ -294,7 +295,7 @@ skipMany1 :: Parser a -> Parser ()
 
 `skipMany1 p` applies the parser `p` one or more times, skipping its result.
 
-== many1
+=== many1
 
 ```haskell
 many1 :: Parser a -> Parser [a]
@@ -307,7 +308,7 @@ returned values of p.
   word  = many1 letter
 ```
 
-== sepBy
+=== sepBy
 
 ```haskell
 sepBy :: Parser a -> Parser sep -> Parser [a]
@@ -320,7 +321,7 @@ sep. Returns a list of values returned by p.
   commaSep p  = p `sepBy` (symbol ",")
 ```
 
-== sepBy1
+=== sepBy1
 
 ```haskell
 sepBy1 :: Parser a -> Parser sep -> Parser [a]
@@ -329,7 +330,7 @@ sepBy1 :: Parser a -> Parser sep -> Parser [a]
 sepBy1 p sep parses one or more occurrences of p, separated by
 sep. Returns a list of values returned by p.
 
-== endBy
+=== endBy
 
 ```haskell
 endBy :: Parser a -> Parser sep -> Parser [a]
@@ -342,7 +343,7 @@ by sep. Returns a list of values returned by p.
    cStatements  = cStatement `endBy` semi
 ```
 
-== endBy1
+=== endBy1
 
 ```haskell
 endBy1 :: Parser a -> Parser sep -> Parser [a]
@@ -351,7 +352,7 @@ endBy1 :: Parser a -> Parser sep -> Parser [a]
 endBy1 p sep parses one or more occurrences of p, seperated and ended
 by sep. Returns a list of values returned by p.
 
-== sepEndBy
+=== sepEndBy
 
 ```haskell
 sepEndBy :: Parser a -> Parser sep -> Parser [a]
@@ -365,7 +366,7 @@ of values returned by p.
   haskellStatements  = haskellStatement `sepEndBy` semi
 ```
 
-== sepEndBy1
+=== sepEndBy1
 
 ```haskell
 sepEndBy1 :: Parser a -> Parser sep -> Parser [a]
@@ -374,7 +375,7 @@ sepEndBy1 :: Parser a -> Parser sep -> Parser [a]
 sepEndBy1 p sep parses one or more occurrences of p, separated and
 optionally ended by sep. Returns a list of values returned by p.
 
-== chainl
+=== chainl
 
 ```haskell
 chainl :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
@@ -385,7 +386,7 @@ op. Returns a value obtained by a left associative application of all
 functions returned by op to the values returned by p. If there are
 zero occurrences of p, the value x is returned.
 
-== chainl1
+=== chainl1
 
 ```haskell
 chainl1 :: Parser a -> Parser (a -> a -> a) -> Parser a
@@ -397,7 +398,7 @@ functions returned by op to the values returned by p. . This parser
 can for example be used to eliminate left recursion which typically
 occurs in expression grammars.
 
-== chainr
+=== chainr
 
 ```haskell
 chainr :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
@@ -408,7 +409,7 @@ Returns a value obtained by a right associative application of all
 functions returned by op to the values returned by p. If there are no
 occurrences of p, the value x is returned.
 
-== chainr1
+=== chainr1
 
 ```haskell
 chainr1 :: Parser a -> Parser (a -> a -> a) -> Parser a
@@ -418,7 +419,7 @@ chainr1 p op x parser one or more occurrences of `p`, separated by op
 Returns a value obtained by a right associative application of all
 functions returned by op to the values returned by p.
 
-== eof
+=== eof
 
 ```haskell
 eof :: Parser ()
@@ -434,7 +435,7 @@ primitive parser but it is defined using notFollowedBy.
 The (<?>) operator is used for error messages. We will come back to
 error messages after writing the basic SQL parser.
 
-== notFollowedBy
+=== notFollowedBy
 
 ```haskell
 notFollowedBy :: Show a => Parser a -> Parser ()
@@ -454,7 +455,7 @@ follows:
                        })
 ```
 
-== manyTill
+=== manyTill
 
 ```haskell
 manyTill :: Parser a -> Parser end -> Parser [a]
@@ -474,7 +475,7 @@ used to scan comments:
 Note the overlapping parsers anyChar and string "-\->", and therefore
 the use of the try combinator.
 
-== lookAhead
+=== lookAhead
 
 ```haskell
 lookAhead :: Parser a -> Parser a
@@ -485,7 +486,7 @@ lookAhead p parses p without consuming any input.
 If p fails and consumes some input, so does lookAhead. Combine with
 try if this is undesirable.
 
-== anyToken
+=== anyToken
 
 ```haskell
 anyToken :: Parser Char
@@ -494,7 +495,7 @@ anyToken :: Parser Char
 The parser anyToken accepts any kind of token. It is for example used
 to implement eof. Returns the accepted token.
 
-= Control.Applicative
+== Control.Applicative
 
 Here are the functions from Applicative that are used:
 
@@ -525,9 +526,9 @@ Control.Applicative: possible performance implictions? Look at the
 implementations, maybe they are all the same now, and the performance
 issues were in the past only.
 
-= Control.Monad
+== Control.Monad
 
-== return
+=== return
 
 One use of return is to always succeed, and return a value:
 
@@ -542,7 +543,7 @@ Right ('a',"")
 Right ('x',"b")
 ```
 
-== mzero
+=== mzero
 
 This function is used in the implementation of `choice`:
 

@@ -1,5 +1,6 @@
 
-= Overview
+[[applicative-style-parsing-code]]
+= Applicative style parsing code
 
 Now we can go back over the expression parsing code written in the
 last tutorial, and make it much more concise, and also make it more
@@ -116,7 +117,7 @@ Let's go over the simple expression parsers and try to rewrite them
 using this style. We will see a few other new functions. I will break
 things down into a lot of steps.
 
-= lexeme
+== lexeme
 
 Here is the old lexeme parser, 'D' suffix for 'do notation'.
 
@@ -162,7 +163,7 @@ Now remove the redundant do:
 > lexemeA :: Parser a -> Parser a
 > lexemeA p = p <* whitespace
 
-= num
+== num
 
 Now let's tackle the `num` parser.
 
@@ -237,7 +238,7 @@ Then the num expression parser looks like this:
 and we also get a integer parser which we can reuse if we need to
 parse an integer in another context.
 
-= var
+== var
 
 Here is the previous var parser:
 
@@ -300,7 +301,7 @@ Now tidy it up using `(<$>)` with the `Var` constructor:
 We could also split the `iden` into a separate top level function,
 with the same idea as with splitting the `integer` parser.
 
-= parens
+== parens
 
 Here is the starting point:
 
@@ -328,7 +329,7 @@ have to use some extra parentheses (!) here.
 TODO: lost the chained <*. Put something below about this so there is
 a concrete example.
 
-= simple expr
+== simple expr
 
 Here is the old version:
 
@@ -363,7 +364,7 @@ You could also write the `op` parser inline:
 
 Maybe this last step makes it less readable?
 
-= summary
+== summary
 
 Here is the finished job for all the simple expression code without
 separate token parsers:

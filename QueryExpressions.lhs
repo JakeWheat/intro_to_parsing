@@ -1,5 +1,6 @@
 
-= Overview
+[[query-expressions]]
+= Query expressions
 
 We can now start on the 'select' parser. In the SQL standard, it
 refers to these things as 'query expressions' to distinguish then from
@@ -88,7 +89,7 @@ expression values.
 >                     ,qeHaving = Nothing
 >                     ,qeOrderBy = []}
 
-= select lists
+== select lists
 
 Let's start with something simple:
 
@@ -169,7 +170,7 @@ select 1+2, 3+4;
 > commaSep1 :: Parser a -> Parser [a]
 > commaSep1 = (`sepBy1` comma)
 
-== aliases
+=== aliases
 
 We can write names for the columns produced from a select list using
 the keyword `as`, and we can miss out the `as`:
@@ -206,7 +207,7 @@ items:
 > queryExpr0 = mkSelect <$> selectList0
 >   where mkSelect sl = makeSelect {qeSelectList = sl}
 
-= from clause
+== from clause
 
 > from :: Parser String
 > from = keyword_ "from" *> identifier
@@ -259,7 +260,7 @@ a column alias and then getting stuck.
 
 That did the job for now.
 
-= where
+== where
 
 The where, group by, having, and order by parsers are simple.
 
@@ -284,7 +285,7 @@ The where, group by, having, and order by parsers are simple.
 >                        ,qeFrom = fr
 >                        ,qeWhere = wh}
 
-= group by
+== group by
 
 > groupByTests :: [(String,QueryExpr)]
 > groupByTests =
@@ -319,7 +320,7 @@ The where, group by, having, and order by parsers are simple.
 >                        ,qeWhere = wh
 >                        ,qeGroupBy = gr}
 
-= having
+== having
 
 > havingTests :: [(String,QueryExpr)]
 > havingTests =
@@ -352,7 +353,7 @@ The where, group by, having, and order by parsers are simple.
 Looking nice so far. Did you run the tests for each stage?
 
 
-= order by
+== order by
 
 > orderByTests :: [(String,QueryExpr)]
 > orderByTests =

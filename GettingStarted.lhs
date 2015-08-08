@@ -1,5 +1,6 @@
 
-= Overview
+[[getting-started]]
+= Getting started
 
 This is an introduction to parsing with Haskell and Parsec.
 
@@ -9,12 +10,8 @@ Platform installed (or GHC and Parsec installed in some other way).
 This tutorial was written using GHC 7.6.3 and Parsec 3.1.3, which are
 the versions which come with the Haskell Platform 2013.2.0.0.
 
-This file is a Literate Haskell file, available here:
-<https://github.com/JakeWheat/intro_to_parsing/blob/master/GettingStarted.lhs>
-
-All the other files in this tutorial collection are Literate Haskell
-files, and they are all available here:
-<https://github.com/JakeWheat/intro_to_parsing/>
+This tutorial was written using Literate Haskell files available here:
+link:https://github.com/JakeWheat/intro_to_parsing[].
 
 I recommend you download them all, and follow along in your favourite
 editor, and use ghci to experiment. To download, use:
@@ -32,7 +29,7 @@ Here are the imports.
 > import Data.Char
 > import Text.Parsec.String.Combinator (many1)
 
-= Getting started
+== First parser
 
 The first parser:
 
@@ -178,7 +175,7 @@ Right "122"
 
 This can be used to quickly try out new ad hoc parsing code.
 
-= Type signatures
+== Type signatures
 
 The real Parsec functions have quite complex type signatures. This
 makes a lot of things very tricky before you understand them, and can
@@ -193,7 +190,7 @@ modules are created with the following name pattern:
 
 Later on, we will look at the general types in more detail.
 
-= Text.Parsec.Char
+== Text.Parsec.Char
 
 Let's go through some of the functions in `Text.Parsec.Char` module from
 the Parsec package. The haddock is available here:
@@ -386,7 +383,7 @@ Right ()
 
 It always succeeds.
 
-= A couple of helper executables
+== A couple of helper executables
 
 Here are two exes which you can use to parse either a string or a file
 to help you experiment. This will save you having to figure out how to

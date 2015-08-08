@@ -1,8 +1,11 @@
 
-= Overview
+[[parsing-expressions-with-fixity]]
+= Parsing expressions with fixity
 
 Text.Parsec.Expr allows building expression parsers with a range of
-operators with different precedences and associativities easily.
+operators with different precedences and associativities
+easily. Fixity is the (not completely standard) term for precendence
+and associativity together.
 
 `Text.Parsec.Expr` can be great to quickly get a parser up and
 running.
@@ -20,7 +23,7 @@ running.
 Let's extend the SimpleExpression type and parsers to cover a range of
 operators with different precedences and associativity.
 
-= expressions with plus and times
+== expressions with plus and times
 
 Let's start with a simple case: + and * with the usual fixity. Here is
 the abstract syntax:
@@ -91,7 +94,7 @@ Right (Plus (PteVar "a") (Times (PteVar "b") (PteVar "c")))
 Right (Plus (Times (PteVar "a") (PteVar "b")) (PteVar "c"))
 ```
 
-= a full featured expression type
+== a full featured expression type
 
 Now let's try a much bigger example with lots more operators. Now we
 are thinking ahead to the first version of the SQL query parser, and
@@ -99,14 +102,14 @@ preparing for this.
 
 Here are our new operators in precedence order:
 
-== unary + -
+=== unary + -
 
 ```
 +a
 -3
 ```
 
-== exponentiation
+=== exponentiation
 
 ```
 a ^ 3
@@ -114,7 +117,7 @@ a ^ 3
 
 associativity: left
 
-== multiplication, division, modulo
+=== multiplication, division, modulo
 
 ```
 a * 3
@@ -124,7 +127,7 @@ a % 5
 
 associativity: left
 
-== addition, subtraction
+=== addition, subtraction
 
 ```
 a + b
@@ -133,7 +136,7 @@ a - b
 
 associativity: left
 
-== less than, greater than
+=== less than, greater than
 
 ```
 a < b
@@ -142,7 +145,7 @@ a > b
 
 associativity: none
 
-== equals
+=== equals
 
 ```
 a = 3
@@ -150,13 +153,13 @@ a = 3
 
 associativity: right
 
-== not
+=== not
 
 ```
 not a
 ```
 
-== and
+=== and
 
 ```
 a and b
@@ -164,7 +167,7 @@ a and b
 
 associativity: left
 
-== or
+=== or
 
 ```
 a or b

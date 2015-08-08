@@ -1,5 +1,6 @@
 
-= Overview
+[[value-expressions]]
+= Value expressions
 
 In this tutorial, we will build a parser for a subset of SQL value
 expressions. These are roughly the same as the expressions used in
@@ -14,6 +15,9 @@ will develop here isn't exactly ANSI SQL value expressions, and we
 won't use them exactly how the standards do, but the differences
 really aren't important right now. I will come back to this in a later
 tutorial.
+
+TODO: not so sure anymore what is a 'value expression' in the
+standard, and what is a 'scalar expression'. Find out and document it.
 
 > {-# LANGUAGE TupleSections #-}
 > module ValueExpressions (ValueExpr(..)
@@ -41,9 +45,9 @@ tutorial.
 >
 > import Debug.Trace (trace)
 
-= Lineup
+== Lineup
 
-== comments
+=== comments
 
 We will start supporting comments. It will support the two standard
 comment syntaxes from the standard:
@@ -58,7 +62,7 @@ comment
 
 The `/* */` comments do not nest.
 
-== literals
+=== literals
 
 It will just support positive integral and string literals at this
 time. Proper SQL supports more literal types including some quite
@@ -70,7 +74,7 @@ weird syntax which we will skip for now.
 'string literal'
 ```
 
-== identifiers
+=== identifiers
 
 We will use simple identifiers: an identifier may start with a letter
 or underscore, and contain letters, underscores and numbers. Full SQL
@@ -84,7 +88,7 @@ _test_
 a123
 ```
 
-== 'dotted identifiers'
+=== 'dotted identifiers'
 
 We will do some limited support for identifiers with two parts
 separated by a dot. I don't want to get into the exact meaning or the
@@ -97,7 +101,7 @@ t.a
 something.something_else
 ```
 
-== star
+=== star
 
 We will support the star as special expression which can be used at
 the top level of select lists (and a few other places in SQL). We will
@@ -108,7 +112,7 @@ also support a 'dotted star'.
 t.*
 ```
 
-== function application
+=== function application
 
 This represents any syntax which looks like the normal function
 application used in languages like C. The function name must parse as
@@ -120,7 +124,7 @@ g(1)
 h(2,'something')
 ```
 
-== operators
+=== operators
 
 We will only support a small range of binary operators for now plus a
 single prefix unary operator (`not`). We will attempt to support
@@ -148,7 +152,7 @@ a like b
 not a
 ```
 
-== case expression
+=== case expression
 
 There are two standard variations of case expressions in SQL. One is
 more like a switch statement in C (but is an expression, not a
@@ -175,7 +179,7 @@ end
 The else branch is optional (if it is missing, it implicitly means
 'else null').
 
-== parentheses
+=== parentheses
 
 It will parse and represent parentheses explicitly in the abstract
 syntax, like we did with the previous expression parsers.
@@ -183,7 +187,7 @@ syntax, like we did with the previous expression parsers.
 ```sql
 (1 + 2) * 3
 ```
-= abstract syntax for value expressions
+== abstract syntax for value expressions
 
 Here is a type to represent value expressions:
 
@@ -211,7 +215,7 @@ We can start by using the code already written to produce a partial
 expression parser, then add parsing for each new constructor one at a
 time.
 
-= automated testing framework
+== automated testing framework
 
 Let's start with some examples we can turn into automated tests. Here
 are the constructors above which I think we've already more or less
@@ -273,9 +277,9 @@ Here is a test runner which uses HUnit:
 >       Left e -> H.assertFailure $ show e
 >       Right got -> H.assertEqual src expected got
 
-= the parsing we already have
+== the parsing we already have
 
-== tokens
+=== tokens
 
 > lexeme :: Parser a -> Parser a
 > lexeme p = p <* whitespace
@@ -304,7 +308,7 @@ Here is a test runner which uses HUnit:
 The whitespace parser is below, since it includes some new code to
 deal with comments.
 
-== helper functions
+=== helper functions
 
 > keyword :: String -> Parser String
 > keyword k = try $ do
@@ -318,7 +322,7 @@ parsers. I think maybe this should come in the error message tutorial?
 > parens :: Parser a -> Parser a
 > parens = between openParen closeParen
 
-== terms
+=== terms
 
 > num :: Parser ValueExpr
 > num = NumLit <$> integer
@@ -335,7 +339,7 @@ lots of very similar code in this tutorial.
 > term0 :: Parser ValueExpr
 > term0 = iden <|> num <|> parensValue valueExpr0
 
-== operator table and the first value expression parser
+=== operator table and the first value expression parser
 
 I've added all the new operators in this table.
 
@@ -379,12 +383,12 @@ Cases: 23  Tried: 23  Errors: 0  Failures: 0
 Counts {cases = 23, tried = 23, errors = 0, failures = 0}
 ```
 
-= new parsers
+== new parsers
 
 Let's start extending things one constructor at a time, but first we
 will do comments.
 
-== whitespace and comments
+=== whitespace and comments
 
 Here is our old whitespace parser:
 
@@ -424,7 +428,7 @@ Here is the final parser for whitespace:
 >                    *> manyTill anyChar (try $ string "*/")
 >     simpleWhitespace = void $ many1 (oneOf " \t\n")
 
-== string literal
+=== string literal
 
 Our string literal is any characters except single quote enclosed in
 single quotes. We aren't going to support other string literal
@@ -465,7 +469,7 @@ Counts {cases = 25, tried = 25, errors = 0, failures = 0}
 
 So far, so good.
 
-== dotted identifier
+=== dotted identifier
 
 > dIdenTests :: [(String,ValueExpr)]
 > dIdenTests =
@@ -513,7 +517,7 @@ the longest choice first and use `try` when there is a common prefix.
 Cases: 26  Tried: 26  Errors: 0  Failures: 0
 Counts {cases = 26, tried = 26, errors = 0, failures = 0}
 ```
-== star
+=== star
 
 star - no surprises
 
@@ -536,7 +540,7 @@ Cases: 27  Tried: 27  Errors: 0  Failures: 0
 Counts {cases = 27, tried = 27, errors = 0, failures = 0}
 ```
 
-== dotted star
+=== dotted star
 
 Here is dotted star.
 
@@ -562,7 +566,7 @@ Cases: 28  Tried: 28  Errors: 0  Failures: 0
 Counts {cases = 28, tried = 28, errors = 0, failures = 0}
 ```
 
-== app
+=== app
 
 The App constructor is used for syntax which looks like regular
 function application: f(), f(a), f(a,b), etc.
@@ -604,7 +608,7 @@ Counts {cases = 31, tried = 31, errors = 0, failures = 0}
 
 Everything looks good.
 
-== case
+=== case
 
 Here is something a little more interesting.
 

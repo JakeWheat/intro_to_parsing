@@ -196,11 +196,11 @@ You can also write it in this way:
 >     n <- Num <$> read <$> lexemeA (many1 digit)
 >     return n
 
-Why does this work? It parses like this:
+Why does this work? It it equivalent to this:
 
 > numA2' :: Parser SimpleExpr
 > numA2' = do
->     n <- Num <$> (read <$> lexemeA (many1 digit))
+>     n <- (Num . read) <$> lexemeA (many1 digit))
 >     return n
 
 Let's break it down:

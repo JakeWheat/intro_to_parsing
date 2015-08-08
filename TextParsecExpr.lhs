@@ -1,4 +1,6 @@
 
+= Overview
+
 Text.Parsec.Expr allows building expression parsers with a range of
 operators with different precedences and associativities easily.
 

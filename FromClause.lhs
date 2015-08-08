@@ -1,4 +1,6 @@
 
+= Overview
+
 In this tutorial, we extend the from clause support to the following:
 we will support implicit and explicit joins, including keywords
 natural, inner, outer, left, right, full, cross, on and using, plus

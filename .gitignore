@@ -1,2 +1,4 @@
 /build/
 /nohup.out
+/render/cabal.sandbox.config
+/render/.cabal-sandbox

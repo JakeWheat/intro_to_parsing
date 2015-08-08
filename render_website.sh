@@ -1,11 +1,20 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
 
 #test code to render to html to see what it looks like
 
-mkdir -p html/
+mkdir -p build
 
-cp main.css html/
+cp main.css build
 
-for i in *.lhs; do
-    pandoc --from=markdown+lhs --to=html $i -o html/$i.html -c main.css --toc;
+# need some mkdir -p
+
+for i in `find . -iname '*hs'`; do
+    echo $i
+    mkdir -p build/$(dirname $i)
+    runhaskell render/Render.lhs $i > build/${i%.*}.asciidoc && \
+        asciidoctor build/${i%.*}.asciidoc
 done
+
+rm build/*.asciidoc

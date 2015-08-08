@@ -23,6 +23,7 @@ This is the parser which you can replace with your own code:
 
 Here is an example of running this program:
 
+```
 $ runhaskell ParseString.lhs x
 (line 1, column 1):
 unexpected "x"
@@ -30,3 +31,4 @@ expecting "correct"
 
 $ runhaskell ParseString.lhs correct
 ()
+```

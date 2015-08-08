@@ -412,7 +412,7 @@ occurrences of p, the value x is returned.
 chainr1 :: Parser a -> Parser (a -> a -> a) -> Parser a
 ```
 
-chainr1 p op x parser one or more occurrences of |p|, separated by op
+chainr1 p op x parser one or more occurrences of `p`, separated by op
 Returns a value obtained by a right associative application of all
 functions returned by op to the values returned by p.
 
@@ -467,8 +467,9 @@ used to scan comments:
                       ; manyTill anyChar (try (string "-->"))
                       }
 ```
+// asciidoc: the string should be "-->"
 
-Note the overlapping parsers anyChar and string "-->", and therefore
+Note the overlapping parsers anyChar and string "-\->", and therefore
 the use of the try combinator.
 
 == lookAhead
@@ -509,10 +510,16 @@ parse a keyword and return a no argument constructor:
 >                    ,Type2 <$ string "type2"
 >                    ,Type3 <$ string "type3"]
 
-There is also `(<**>)` which is `(<*>)` with the arguments flipped.
+// the first symbol following should be (<**>)
+// the backslashes are for asciidoc
+// todo: do this in the render.lhs?
+// I wish I understood why you need backslashes in some places
+// and not others
+
+There is also `(<\**>)` which is `(<*>)` with the arguments flipped.
 
 TODO: double check using these from Parsec instead of
-Control.Applicative: possible performance implications? Look at the
+Control.Applicative: possible performance implictions? Look at the
 implementations, maybe they are all the same now, and the performance
 issues were in the past only.
 

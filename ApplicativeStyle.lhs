@@ -317,7 +317,9 @@ Here is the rewrite in one step:
 >                 *> simpleExprD
 >                 <* lexemeA (char ')'))
 
-Here you can see that there is a `(*>)` which works in the opposite
+// f'in asciidoc, the first operator following is (*>)
+
+Here you can see that there is a `(\*>)` which works in the opposite
 direction to `(<*)`. The precendence of these operators means that we
 have to use some extra parentheses (!) here.
 

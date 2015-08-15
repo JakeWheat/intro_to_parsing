@@ -4,13 +4,14 @@
 
 This is an introduction to parsing with Haskell and Parsec.
 
-Prerequisites: you should know some basic Haskell and have the Haskell
-Platform installed (or GHC and Parsec installed in some other way).
+Prerequisites: you should know some basic Haskell and have GHC and
+cabal-install installed (installing the Haskell Platform will give you
+this).
 
-This tutorial was written using GHC 7.6.3 and Parsec 3.1.3, which are
-the versions which come with the Haskell Platform 2013.2.0.0. It
-should also work fine with GHC 7.8.4 and GHC 7.10.2 and through to the
-latest release of Parsec 3.1.x at least.
+This tutorial was originally written using GHC 7.6.3 and Parsec 3.1.3,
+which are the versions which come with the Haskell Platform
+2013.2.0.0. It should also work fine with GHC 7.8.4 and GHC 7.10.2 and
+through to at least the latest release of Parsec 3.1.x.
 
 This tutorial was written using Literate Haskell files available here:
 link:https://github.com/JakeWheat/intro_to_parsing[].
@@ -70,10 +71,6 @@ Now you will get the ghci prompt. Type in ':l GettingStarted.lhs'. You
 can run the parser using a wrapper, enter the following at the ghci
 prompt: `regularParse anyChar "a"`.
 
-```
-regularParse :: Parser a -> String -> Either ParseError a
-```
-
 Here is a transcript of running ghci via 'cabal repl':
 
 ```
@@ -108,6 +105,15 @@ start ghci again, you can just change to the directory with
 GettingStarted.lhs and run 'cabal repl'. ghci should have readline
 support so you can browse through your command history using up and
 down arrow, etc.
+
+This is the type of `regularParse`. It is wrapper which takes a parser
+function such as anyChar, and wraps it so you can parse a string to
+either a parse error, or the return value from your parser function:
+
+```
+regularParse :: Parser a -> String -> Either ParseError a
+```
+
 
 Here are some examples of running this parser on various input:
 
@@ -434,5 +440,3 @@ write this boilerplate until later.
 Now you can easily experiment using ghci, or with a string on the
 command line, or by putting the text to parse into a file and parsing
 that.
-
-TODO: transcript of using these exes.

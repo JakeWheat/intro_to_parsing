@@ -7,8 +7,9 @@ operators with different precedences and associativities
 easily. Fixity is the (not completely standard) term for precendence
 and associativity together.
 
-`Text.Parsec.Expr` can be great to quickly get a parser up and
-running.
+`Text.Parsec.Expr` can be great to quickly get a parser for simple
+expressions or a simple programming language with simple expressions
+up and running.
 
 > import Text.Parsec.String (Parser)
 > import Text.Parsec.String.Combinator (many1, between)

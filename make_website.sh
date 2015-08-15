@@ -23,4 +23,4 @@ echo >> build/intro_to_parsing.asciidoc
 cat README.asciidoc | runhaskell render/FixReadme.lhs >> build/intro_to_parsing.asciidoc
 cat build/IntroToParsing.lhs | runhaskell render/Render.lhs >> build/intro_to_parsing.asciidoc
 
-cat build/intro_to_parsing.asciidoc | asciidoctor -d book - > build/intro_to_parsing.html
+cat build/intro_to_parsing.asciidoc | asciidoctor -d book - | runhaskell AddLinks.lhs > build/index.html

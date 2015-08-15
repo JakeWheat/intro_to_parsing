@@ -522,9 +522,7 @@ parse a keyword and return a no argument constructor:
 There is also `(<\**>)` which is `(<*>)` with the arguments flipped.
 
 TODO: double check using these from Parsec instead of
-Control.Applicative: possible performance implictions? Look at the
-implementations, maybe they are all the same now, and the performance
-issues were in the past only.
+Control.Applicative: possible performance implictions?
 
 == Control.Monad
 

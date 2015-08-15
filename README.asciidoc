@@ -127,7 +127,7 @@ restructuring parser code can lead to better or worse error messages.
 
 If you are interesting in SQL parsing, check out the project to build
 a complete SQL parser here:
-http://jakewheat.github.io/simple-sql-parser/. The parsing code in the
+http://jakewheat.github.io/simple-sql-parser/latest. The parsing code in the
 simple-sql-parser project is based on this tutorial code.
 
 ////
@@ -210,6 +210,6 @@ a string passed as an argument
 an executable which contains the boilerplate to run a parsec parser on
 a file passed as an argument
 
-Contact: jakewheatmail@gmail.com
+Contact: +++jakewheatmail@gmail.com+++
 
 License: BSD3

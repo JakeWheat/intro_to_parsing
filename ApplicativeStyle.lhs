@@ -196,12 +196,8 @@ You can also write it in this way:
 >     n <- Num <$> read <$> lexemeA (many1 digit)
 >     return n
 
-Why does this work? It it equivalent to this:
-
-> numA2' :: Parser SimpleExpr
-> numA2' = do
->     n <- (Num . read) <$> lexemeA (many1 digit))
->     return n
+Why does this work? It it equivalent to the previous version partly
+because of the applicative laws.
 
 Let's break it down:
 

@@ -8,13 +8,16 @@ Prerequisites: you should know some basic Haskell and have the Haskell
 Platform installed (or GHC and Parsec installed in some other way).
 
 This tutorial was written using GHC 7.6.3 and Parsec 3.1.3, which are
-the versions which come with the Haskell Platform 2013.2.0.0.
+the versions which come with the Haskell Platform 2013.2.0.0. It
+should also work fine with GHC 7.8.4 and GHC 7.10.2 and through to the
+latest release of Parsec 3.1.x at least.
 
 This tutorial was written using Literate Haskell files available here:
 link:https://github.com/JakeWheat/intro_to_parsing[].
 
 I recommend you download them all, and follow along in your favourite
-editor, and use ghci to experiment. To download, use:
+editor, and use GHCi to experiment. To download the intro_to_parsing
+files, use:
 
 ```
 git clone https://github.com/JakeWheat/intro_to_parsing.git
@@ -47,8 +50,23 @@ so the return type is `Parser Char`. The `Parser` type itself is in
 the module `Text.Parsec.String`. We will cover this in more detail
 later.
 
-Let's use this parser. Change to the directory where you saved this
-.lhs file, and run ghci. Then type in ':l GettingStarted.lhs'. You
+Let's use this parser. I will assume you have GHC and cabal-install
+installed (which provides the 'cabal' executable) and both are in your
+PATH. The Haskell Platform is one way that provides this.
+
+Change to the directory where you downloaded the intro_to_parsing
+source files (which will contain the GettingStarted.lhs file). Then
+you can set up a cabal sandbox and be ready to work with the code by
+running the following commands in that directory:
+
+```
+cabal update
+cabal sandbox init
+cabal install parsec
+cabal repl
+```
+
+Now you will get the ghci prompt. Type in ':l GettingStarted.lhs'. You
 can run the parser using a wrapper, enter the following at the ghci
 prompt: `regularParse anyChar "a"`.
 
@@ -56,20 +74,40 @@ prompt: `regularParse anyChar "a"`.
 regularParse :: Parser a -> String -> Either ParseError a
 ```
 
-Here is a transcript:
+Here is a transcript of running ghci via 'cabal repl':
 
 ```
-$ ghci
+$ cabal repl
 GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
 Loading package ghc-prim ... linking ... done.
 Loading package integer-gmp ... linking ... done.
 Loading package base ... linking ... done.
 Prelude> :l GettingStarted.lhs
-[1 of 1] Compiling Main             ( GettingStarted.lhs, interpreted )
-Ok, modules loaded: Main.
+[1 of 5] Compiling Text.Parsec.String.Parsec ( Text/Parsec/String/Parsec.hs, interpreted )
+[2 of 5] Compiling Text.Parsec.String.Combinator ( Text/Parsec/String/Combinator.hs, interpreted )
+[3 of 5] Compiling Text.Parsec.String.Char ( Text/Parsec/String/Char.hs, interpreted )
+[4 of 5] Compiling FunctionsAndTypesForParsing ( FunctionsAndTypesForParsing.lhs, interpreted )
+[5 of 5] Compiling Main             ( GettingStarted.lhs, interpreted )
+Ok, modules loaded: FunctionsAndTypesForParsing, Text.Parsec.String.Char, Text.Parsec.String.Combinator, Main, Text.Parsec.String.Parsec.
 *Main> regularParse anyChar "a"
+Loading package array-0.4.0.1 ... linking ... done.
+Loading package deepseq-1.3.0.1 ... linking ... done.
+Loading package bytestring-0.10.0.2 ... linking ... done.
+Loading package containers-0.5.0.0 ... linking ... done.
+Loading package binary-0.5.1.1 ... linking ... done.
+Loading package transformers-0.4.3.0 ... linking ... done.
+Loading package mtl-2.2.1 ... linking ... done.
+Loading package text-1.2.1.3 ... linking ... done.
+Loading package parsec-3.1.9 ... linking ... done.
 Right 'a'
+*Main>
 ```
+
+You can exit ghci by entering ':quit' or using Ctrl-d. From now on, to
+start ghci again, you can just change to the directory with
+GettingStarted.lhs and run 'cabal repl'. ghci should have readline
+support so you can browse through your command history using up and
+down arrow, etc.
 
 Here are some examples of running this parser on various input:
 
@@ -320,7 +358,7 @@ noneOf :: [Char] -> Parser Char
 These are just simple wrappers of satisfy using `elem`.
 
 
-You should try all these parsers out in GHCI, e.g.:
+You should try all these parsers out in ghci, e.g.:
 
 ```
 

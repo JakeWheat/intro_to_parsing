@@ -627,7 +627,7 @@ Here is a new parser, which parses expressions except add.
 > term simpleExprImpl = numE <|> varE <|> parensEN simpleExprImpl
 
 > term5 :: Parser SimpleExpr
-> term5 = term term5
+> term5 = term simpleExpr5
 
 > addE5 :: Parser SimpleExpr
 > addE5 = do

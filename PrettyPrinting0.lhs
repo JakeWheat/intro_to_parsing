@@ -4,12 +4,14 @@
 
 Here is a pretty printer for the parser version 0.
 
-It uses Text.PrettyPrint module. I haven't put much
+It uses Text.PrettyPrint module. I think this module is a bit out of
+date these days, it would be nice to update this code to a more
+fashionable pretty printing library. I haven't put much
 comments/explanation here.
 
 > module PrettyPrinting0 where
 
-
+> import Prelude hiding ((<>))
 > import SimpleSQLQueryParser0 (ValueExpr(..), QueryExpr(..), TableRef(..)
 >                              ,JoinType(..), JoinCondition(..))
 > import qualified SimpleSQLQueryParser0 as S

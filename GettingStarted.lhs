@@ -61,10 +61,10 @@ you can set up a cabal sandbox and be ready to work with the code by
 running the following commands in that directory:
 
 ```
-cabal update
-cabal sandbox init
-cabal install parsec
-cabal repl
+cabal v1-update
+cabal v1-sandbox init
+cabal v1-install parsec HUnit
+cabal v1-repl
 ```
 
 Now you will get the ghci prompt. Type in ':l GettingStarted.lhs'. You
@@ -75,29 +75,26 @@ Here is a transcript of running ghci via 'cabal repl':
 
 ```
 $ cabal repl
-GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
-Loading package ghc-prim ... linking ... done.
-Loading package integer-gmp ... linking ... done.
-Loading package base ... linking ... done.
+Warning: The repl command is a part of the legacy v1 style of cabal usage.
+
+Please switch to using either the new project style and the new-repl command
+or the legacy v1-repl alias as new-style projects will become the default in
+the next version of cabal-install. Please file a bug if you cannot replicate a
+working v1- use case with the new-style commands.
+
+For more information, see: https://wiki.haskell.org/Cabal/NewBuild
+
+GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? for help
 Prelude> :l GettingStarted.lhs
-[1 of 5] Compiling Text.Parsec.String.Parsec ( Text/Parsec/String/Parsec.hs, interpreted )
+[1 of 5] Compiling Text.Parsec.String.Char ( Text/Parsec/String/Char.hs, interpreted )
 [2 of 5] Compiling Text.Parsec.String.Combinator ( Text/Parsec/String/Combinator.hs, interpreted )
-[3 of 5] Compiling Text.Parsec.String.Char ( Text/Parsec/String/Char.hs, interpreted )
+[3 of 5] Compiling Text.Parsec.String.Parsec ( Text/Parsec/String/Parsec.hs, interpreted )
 [4 of 5] Compiling FunctionsAndTypesForParsing ( FunctionsAndTypesForParsing.lhs, interpreted )
 [5 of 5] Compiling Main             ( GettingStarted.lhs, interpreted )
-Ok, modules loaded: FunctionsAndTypesForParsing, Text.Parsec.String.Char, Text.Parsec.String.Combinator, Main, Text.Parsec.String.Parsec.
+Ok, five modules loaded.
 *Main> regularParse anyChar "a"
-Loading package array-0.4.0.1 ... linking ... done.
-Loading package deepseq-1.3.0.1 ... linking ... done.
-Loading package bytestring-0.10.0.2 ... linking ... done.
-Loading package containers-0.5.0.0 ... linking ... done.
-Loading package binary-0.5.1.1 ... linking ... done.
-Loading package transformers-0.4.3.0 ... linking ... done.
-Loading package mtl-2.2.1 ... linking ... done.
-Loading package text-1.2.1.3 ... linking ... done.
-Loading package parsec-3.1.9 ... linking ... done.
 Right 'a'
-*Main>
+*Main> 
 ```
 
 You can exit ghci by entering ':quit' or using Ctrl-d. From now on, to

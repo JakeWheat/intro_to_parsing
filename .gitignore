@@ -2,3 +2,6 @@
 /nohup.out
 /cabal.sandbox.config
 /.cabal-sandbox
+/.ghc.environment.x86_64-linux-8.6.5
+/dist-newstyle/
+/dist/

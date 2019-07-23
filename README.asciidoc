@@ -125,7 +125,7 @@ restructuring parser code can lead to better or worse error messages.
 
 === Going further
 
-If you are interesting in SQL parsing, check out the project to build
+If you are interested in SQL parsing, check out the project to build
 a complete SQL parser here:
 http://jakewheat.github.io/simple-sql-parser/latest. The parsing code in the
 simple-sql-parser project is based on this tutorial code.
